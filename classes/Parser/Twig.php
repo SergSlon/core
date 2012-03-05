@@ -10,6 +10,7 @@
 
 namespace Fuel\Core\Parser;
 use Fuel\Kernel\Parser\Parsable;
+use Exception;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
@@ -64,8 +65,7 @@ class Twig implements Parsable
 		}
 
 		// Twig Environment
-		$this->loader = new Twig_Loader_String();
-		$this->parser = new Twig_Environment($this->loader);
+		$this->parser = new Twig_Environment();
 
 		return $this->parser;
 	}
@@ -76,6 +76,7 @@ class Twig implements Parsable
 	 * @param   string  $path
 	 * @param   array   $data
 	 * @return  string
+	 * @throws  \Exception
 	 *
 	 * @since  2.0.0
 	 */
@@ -91,7 +92,7 @@ class Twig implements Parsable
 		{
 			return $this->parser()->loadTemplate($view_name)->render($data);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			// Delete the output buffer & re-throw the exception
 			ob_end_clean();
@@ -105,6 +106,7 @@ class Twig implements Parsable
 	 * @param   string  $template
 	 * @param   array   $data
 	 * @return  string
+	 * @throws  \Exception
 	 *
 	 * @since  2.0.0
 	 */
@@ -116,7 +118,7 @@ class Twig implements Parsable
 			$this->parser()->setLoader($this->loader_string);
 			return $this->parser()->loadTemplate($template)->render($data);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			// Delete the output buffer & re-throw the exception
 			ob_end_clean();

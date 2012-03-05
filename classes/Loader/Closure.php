@@ -10,6 +10,7 @@
 
 namespace Fuel\Core\Loader;
 use Classes\Loader\Package;
+use Closure;
 
 /**
  * Package loader with Closure that translates classname to a path.
@@ -51,7 +52,7 @@ class Closure extends Package
 	 *
 	 * @since  2.0.0
 	 */
-	public function set_loader(\Closure $loader)
+	public function set_loader(Closure $loader)
 	{
 		$this->loader = $loader;
 		return $this;

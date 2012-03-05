@@ -10,6 +10,7 @@
 
 namespace Fuel\Core;
 use Fuel\Kernel\Application;
+use Exception;
 
 /**
  * Error
@@ -51,7 +52,7 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  2.0.0
 	 */
-	public function show_non_fatal(\Exception $e)
+	public function show_non_fatal(Exception $e)
 	{
 		try
 		{
@@ -62,7 +63,7 @@ class Error extends \Fuel\Kernel\Error
 				false
 			);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			parent::show_non_fatal($e);
 		}
@@ -76,7 +77,7 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  2.0.0
 	 */
-	public function show_fatal(\Exception $e)
+	public function show_fatal(Exception $e)
 	{
 		$data = $this->prepare_exception($e, false);
 		$data['non_fatal'] = $this->non_fatal_cache;
@@ -106,7 +107,7 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  1.0.0
 	 */
-	protected function prepare_exception(\Exception $e, $fatal = true)
+	protected function prepare_exception(Exception $e, $fatal = true)
 	{
 		// Convert exception to data array for error View
 		$data = array();
