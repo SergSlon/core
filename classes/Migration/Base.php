@@ -76,16 +76,37 @@ class Base implements Migratable
 	/**
 	 * Checks whether this migration can be run based on parent() & modifies()
 	 *
+	 * @param   array           $migrations
+	 * @param   string          $id
 	 * @param   Container\Base  $container
-	 * @return  Migratable
+	 * @return  void
 	 * @throws  Exception  when migration didn't validate
 	 */
-	public function validate(Container\Base $container)
+	public function validate(array & $migrations, $id, Container\Base $container)
 	{
-		// @todo implement this to check the container
-		// fail when migrations were ran after parent that modified the same tables
+		reset($migrations);
+		if ($this->parent and $this->tables)
+		{
+			// Skip all migrations prior to this one's parent
+			while (strcmp(key($migrations), $this->parent) <= 0)
+			{
+				next($migrations);
+			}
+			// Check all migrations between the parent and this one itself for conflicts
+			while (strcmp(key($migrations), $id) < 0)
+			{
+				// Load the object if it's still a path
+				$key = key($migrations);
+				is_string($migrations[$key]) and $migrations[$key] = require $migrations[$key];
 
-		return $this;
+				// Check an intersection exist, when that's the case it means fatalities
+				if (array_intersect($this->tables, $migrations[$key]->tables))
+				{
+					throw new Exception('A migration modifying the same tables was insert between this one and its
+						parent. Failing migration: '.$id);
+				}
+			}
+		}
 	}
 
 	/**

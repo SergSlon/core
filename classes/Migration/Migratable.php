@@ -40,11 +40,13 @@ interface Migratable
 	/**
 	 * Checks whether this migration can be run based on parent() & modifies()
 	 *
+	 * @param   array           $migrations
+	 * @param   string          $id
 	 * @param   Container\Base  $container
 	 * @return  Migratable
 	 * @throws  Exception  when migration didn't validate
 	 */
-	public function validate(Container\Base $container);
+	public function validate(array & $migrations, $id, Container\Base $container);
 
 	/**
 	 * Run a migration up or down based on the param

@@ -2,6 +2,7 @@
 
 namespace Fuel\Core\Migration\Container;
 use Fuel\Kernel\Application;
+use Fuel\Core\Migration;
 
 class Base
 {
@@ -155,7 +156,18 @@ class Base
 				last ran migration.');
 		}
 
-		return $this->run($package, $endpoint);
+		return $this->run($package, $endpoint, 1);
+	}
+
+	/**
+	 * Updates migrations to latest
+	 *
+	 * @param   string  $package  package to run migrations on
+	 * @return  Base
+	 */
+	public function latest($package)
+	{
+		return $this->update($package, true);
 	}
 
 	/**
@@ -177,18 +189,7 @@ class Base
 				last ran migration.');
 		}
 
-		return $this->run($package, $endpoint);
-	}
-
-	/**
-	 * Updates migrations to latest
-	 *
-	 * @param   string  $package  package to run migrations on
-	 * @return  Base
-	 */
-	public function latest($package)
-	{
-		return $this->update($package, true);
+		return $this->run($package, $endpoint, -1);
 	}
 
 	/**
@@ -196,21 +197,43 @@ class Base
 	 *
 	 * @param   string  $package
 	 * @param   string  $endpoint
+	 * @param   int     $direction
 	 * @return  Base
 	 * @throws  \Exception
 	 */
-	public function run($package, $endpoint)
+	protected function run($package, $endpoint, $direction)
 	{
 		$migrated    = $this->get_migrated($package);
 		$migrations  = $this->get_migrations($package);
+		$direction < 0 and $migrations = array_reverse($migrations);
+
 		try
 		{
 			foreach ($migrations as $id => & $migration)
 			{
-				is_string($migration) and $migration = require $migration;
-				if ($migration(strcmp($endpoint, $id)))
+				if ($direction > 0 and strcmp($id, $endpoint) <= 0 and ! isset($migrated[$id]))
 				{
-					$this->set_migrated($package, $id);
+					is_string($migration) and $migration = require $migration;
+					$migration->validate($package, $id, $this);
+					if ($migration($direction))
+					{
+						$this->set_migrated($package, $id, $direction);
+					}
+					else
+					{
+						throw new Migration\Exception('Migration with ID "'.$id.'" failed to migrate up.');
+					}
+				}
+				elseif ($direction < 0 and strcmp($id, $endpoint) > 0 and isset($migrated[$id]))
+				{
+					if ($migration($direction))
+					{
+						$this->set_migrated($package, $id, $direction);
+					}
+					else
+					{
+						throw new Migration\Exception('Migration with ID "'.$id.'" failed to migrate up.');
+					}
 				}
 			}
 			$this->flush_migrated();
@@ -230,11 +253,12 @@ class Base
 	 *
 	 * @param   string  $package
 	 * @param   string  $id
+	 * @param   int     $direction
 	 * @return  void
 	 */
-	public function set_migrated($package, $id)
+	public function set_migrated($package, $id, $direction)
 	{
-		$this->_unsaved_migrated[$package][] = $id;
+		$this->_unsaved_migrated[$package][] = array($id => $direction);
 	}
 
 	/**
@@ -246,16 +270,28 @@ class Base
 	{
 		foreach ($this->_unsaved_migrated as $package => $ids)
 		{
-			foreach ($ids as $id)
+			foreach ($ids as $id => $direction)
 			{
 				// @todo make this actually work
-				$this->app->get_object('db')
-					->insert($this->config->get('table', 'migrations'))
-					->set(array(
-						'package' => $package,
-						'migration_id' => $id,
-					))
-					->execute();
+				if ($direction > 0)
+				{
+					$this->app->get_object('db')
+						->insert($this->config->get('table', 'migrations'))
+						->set(array(
+							'package' => $package,
+							'migration_id' => $id,
+						))
+						->execute();
+				}
+				elseif ($direction < 0)
+				{
+					$this->app->get_object('db')
+						->delete()
+						->from($this->config->get('table', 'migrations'))
+						->where('package', '=', $package)
+						->where('migration_id', '=', $id)
+						->execute();
+				}
 			}
 		}
 	}
