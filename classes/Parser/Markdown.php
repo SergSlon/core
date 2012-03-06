@@ -21,6 +21,11 @@ use dflydev\markdown\MarkdownParser;
  */
 class Markdown implements Parsable
 {
+	/**
+	 * @var  \dflydev\markdown\MarkdownParser
+	 */
+	protected $parser;
+
 	public function extension()
 	{
 		return 'md';
@@ -33,15 +38,10 @@ class Markdown implements Parsable
 	 *
 	 * @since  1.1.0
 	 */
-	public static function parser()
+	public function parser()
 	{
-		static $parser = null;
-		if (is_null($parser))
-		{
-			$parser = new MarkdownParser();
-		}
-
-		return $parser;
+		! isset($this->parser) and $parser = new MarkdownParser();
+		return $this->parser;
 	}
 
 	/**

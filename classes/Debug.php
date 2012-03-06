@@ -130,7 +130,7 @@ JS;
 		foreach ($arguments as $argument)
 		{
 			echo '<strong>'.$label.' #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
-				echo static::format('...', $argument);
+				echo $this->format('...', $argument);
 			echo '<br />';
 		}
 
@@ -147,7 +147,7 @@ JS;
 	 * @param   string  $indent_char  the indentation character
 	 * @return  string  the formatted string.
 	 */
-	public static function format($name, $var, $level = 0, $indent_char = '&nbsp;&nbsp;&nbsp;&nbsp;')
+	public function format($name, $var, $level = 0, $indent_char = '&nbsp;&nbsp;&nbsp;&nbsp;')
 	{
 		$return = str_repeat($indent_char, $level);
 		if (is_array($var))
@@ -166,7 +166,7 @@ JS;
 			$sub_return = '';
 			foreach ($var as $key => $val)
 			{
-				$sub_return .= static::format($key, $val, $level + 1);
+				$sub_return .= $this->format($key, $val, $level + 1);
 			}
 
 			if (count($var) > 0)
@@ -219,7 +219,7 @@ JS;
 			$sub_return = '';
 			foreach ($vars as $key => $val)
 			{
-				$sub_return .= static::format($key, $val, $level + 1);
+				$sub_return .= $this->format($key, $val, $level + 1);
 			}
 
 			if (count($vars) > 0)
