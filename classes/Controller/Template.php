@@ -52,7 +52,7 @@ abstract class Template extends Base
 	 */
 	public function after($response)
 	{
-		empty($response) and $response = $this->template;
+		is_null($response) and $response = $this->template;
 		return parent::after($response);
 	}
 }

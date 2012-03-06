@@ -40,7 +40,7 @@ abstract class Base extends View\Base
 	public function __construct(array $data = array())
 	{
 		parent::__construct(null, $data);
-		empty($this->_path) and $this->default_path();
+		! isset($this->_path) and $this->default_path();
 	}
 
 	/**
@@ -114,7 +114,7 @@ abstract class Base extends View\Base
 			$this->after();
 		}
 		// Run this Presenter's main method, finish up with after() and prevent is from being run again
-		elseif ( ! empty($this->_method))
+		elseif (isset($this->_method))
 		{
 			$this->{$this->_method}();
 			$this->_method = null;

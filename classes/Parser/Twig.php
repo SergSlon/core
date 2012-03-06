@@ -59,14 +59,7 @@ class Twig implements Parsable
 	 */
 	public function parser()
 	{
-		if ( ! empty($this->parser))
-		{
-			return $this->parser;
-		}
-
-		// Twig Environment
-		$this->parser = new Twig_Environment();
-
+		! isset($this->parser) and $this->parser = new Twig_Environment();
 		return $this->parser;
 	}
 
