@@ -399,7 +399,7 @@ JS;
 		else
 		{
 			list($usec, $sec) = explode(" ", microtime());
-			$utime_before = ((float)$usec + (float)$sec);
+			$utime_before = (floatval($usec) + floatval($sec));
 			$stime_before = 0;
 		}
 
@@ -416,7 +416,7 @@ JS;
 		else
 		{
 			list($usec, $sec) = explode(" ", microtime());
-			$utime_after = ((float)$usec + (float)$sec);
+			$utime_after = (floatval($usec) + floatval($sec));
 			$stime_after = 0;
 		}
 
