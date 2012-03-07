@@ -15,6 +15,8 @@ $env->dic->set_classes(array(
 	'Loader:Closure'       => 'Fuel\\Core\\Loader\\Closure',
 	'Loader:Lowercase'     => 'Fuel\\Core\\Loader\\Lowercase',
 	'Migration'            => 'Fuel\\Core\\Migration\\Base',
+	'Migration_Container'  => 'Fuel\\Core\\Migration\\Container\\Base',
+	'Migration_Container_Storage'  => 'Fuel\\Core\\Migration\\Container\\Storage\\Base',
 	'Profiler'             => 'Fuel\\Core\\Profiler',
 	'Request:Curl'         => 'Fuel\\Core\\Request\\Curl',
 	'Security_String:Xss'  => 'Fuel\\Core\\Security\\String\\Xss',

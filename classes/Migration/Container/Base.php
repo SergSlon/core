@@ -1,9 +1,24 @@
 <?php
+/**
+ * Part of the FuelPHP framework.
+ *
+ * @package    Fuel\Core
+ * @version    2.0.0
+ * @license    MIT License
+ * @copyright  2010 - 2012 Fuel Development Team
+ */
 
 namespace Fuel\Core\Migration\Container;
 use Fuel\Kernel\Application;
 use Fuel\Core\Migration;
 
+/**
+ * Container for migrations for processing and running them
+ *
+ * @package  Fuel\Core
+ *
+ * @since  2.0.0
+ */
 class Base
 {
 	/**
@@ -19,14 +34,14 @@ class Base
 	public $config;
 
 	/**
+	 * @var  \Fuel\Core\Migration\Container\Storage\Storable
+	 */
+	public $storage;
+
+	/**
 	 * @var  array  list of migrations that have been run
 	 */
 	protected $migrated = array();
-
-	/**
-	 * @var  array  list of migrations that have ben ran but not been updated in the DB
-	 */
-	protected $_unsaved_migrated = array();
 
 	/**
 	 * @var  array  list of available migrations
@@ -67,6 +82,8 @@ class Base
 					return is_string($table) and preg_match('#^[a-z0-9_]+$#uiD', $table) > 0;
 				},
 			));
+
+		$this->storage = $app->forge($this->config->get('storage', 'Migration_Container_Storage'), $this);
 	}
 
 	/**
@@ -79,14 +96,7 @@ class Base
 	{
 		if ( ! isset($this->migrated[$package]))
 		{
-			// @todo make this actually work
-			$this->migrated[$package] = $this->app->get_object('db')
-				->select()
-				->from($this->config->get('table', 'migrations'))
-				->where('package', '=', $package)
-				->order_by('migration_id', 'ASC')
-				->execute()
-				->as_array('migration_id', 'migration_id');
+			$this->migrated[$package] = $this->storage->get_migrated($package);
 		}
 
 		return $this->migrated[$package];
@@ -217,7 +227,7 @@ class Base
 					$migration->validate($package, $id, $this);
 					if ($migration($direction))
 					{
-						$this->set_migrated($package, $id, $direction);
+						$this->storage->set_migrated($package, $id, $direction);
 					}
 					else
 					{
@@ -228,7 +238,7 @@ class Base
 				{
 					if ($migration($direction))
 					{
-						$this->set_migrated($package, $id, $direction);
+						$this->storage->set_migrated($package, $id, $direction);
 					}
 					else
 					{
@@ -236,63 +246,15 @@ class Base
 					}
 				}
 			}
-			$this->flush_migrated();
+			$this->storage->flush();
 		}
 		catch(\Exception $e)
 		{
 			// Make sure finished migrations are marked as such
-			$this->flush_migrated();
+			$this->storage->flush();
 			throw $e;
 		}
 
 		return $this;
-	}
-
-	/**
-	 * Marks a migration ID as ran but with status yet unsaved
-	 *
-	 * @param   string  $package
-	 * @param   string  $id
-	 * @param   int     $direction
-	 * @return  void
-	 */
-	public function set_migrated($package, $id, $direction)
-	{
-		$this->_unsaved_migrated[$package][] = array($id => $direction);
-	}
-
-	/**
-	 * Runs through all the migrations that were ran and have to be saved to the database
-	 *
-	 * @return  void
-	 */
-	public function flush_migrated()
-	{
-		foreach ($this->_unsaved_migrated as $package => $ids)
-		{
-			foreach ($ids as $id => $direction)
-			{
-				// @todo make this actually work
-				if ($direction > 0)
-				{
-					$this->app->get_object('db')
-						->insert($this->config->get('table', 'migrations'))
-						->set(array(
-							'package' => $package,
-							'migration_id' => $id,
-						))
-						->execute();
-				}
-				elseif ($direction < 0)
-				{
-					$this->app->get_object('db')
-						->delete()
-						->from($this->config->get('table', 'migrations'))
-						->where('package', '=', $package)
-						->where('migration_id', '=', $id)
-						->execute();
-				}
-			}
-		}
 	}
 }
