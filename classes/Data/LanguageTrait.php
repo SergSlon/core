@@ -33,7 +33,7 @@ trait LanguageTrait
 	 */
 	public function language($value = null, $default = null)
 	{
-		$language = $this->language ?: $this->app->language;
+		$language = $this->language ?: $this->app->language();
 
 		if (func_num_args() == 0)
 		{
