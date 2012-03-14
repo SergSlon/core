@@ -28,7 +28,6 @@ class Debug
 	 */
 	protected $env;
 
-
 	/**
 	 * @var  bool  whether the JS has been output already
 	 */
