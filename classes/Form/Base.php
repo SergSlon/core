@@ -412,10 +412,19 @@ class Base
 
 		$this->config['direct_output'] = true;
 
+		$pre_render = $this->config['field_pre_render'];
+		$post_render = $this->config['field_post_render'];
+
 		foreach ($this->contents as $c)
 		{
 			$method = array_shift($c);
-			$output .= call_user_func_array(array($this, $method), $c);
+			$pre_render and list($method, $c) = $pre_render($method, $c);
+
+			$field   = call_user_func_array(array($this, $method), $c);
+
+			$post_render and $field = $post_render($field);
+
+			$output .= $field;
 		}
 
 		$this->config['direct_output'] = false;
