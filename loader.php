@@ -8,6 +8,9 @@
  * @copyright  2010 - 2012 Fuel Development Team
  */
 
+// Add the core procedural helpers
+require 'helpers.php';
+
 // Add some Core classes to the global DiC
 $env->dic->set_classes(array(
 	'Debug'                => 'Fuel\\Core\\Debug',
