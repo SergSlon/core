@@ -348,7 +348,7 @@ class Base
 		if (func_num_args() >= 3)
 		{
 			! is_bool($checked) and $checked = $checked === $value;
-			$checked ? $attributes['checked'] = 'checked' : $attributes['checked'] = null;
+			$attributes['checked'] = $checked;
 		}
 
 		$attributes['type'] = 'radio';
@@ -371,7 +371,7 @@ class Base
 		if (func_num_args() >= 3)
 		{
 			! is_bool($checked) and $checked = $checked === $value;
-			$checked ? $attributes['checked'] = 'checked' : $attributes['checked'] = null;
+			$attributes['checked'] = $checked;
 		}
 
 		$attributes['type'] = 'checkbox';
@@ -380,9 +380,9 @@ class Base
 
 	public function select($name, $value = '', array $options = array(), array $attributes = array()) {}
 
-	public function option($value = '', $lable = '', array $attributes = array()) {}
+	public function option($value = '', $label = '', $selected = false, array $attributes = array()) {}
 
-	public function optgroup($value = '', $lable = '', array $attributes = array()) {}
+	public function optgroup($value = '', $label = '', array $attributes = array()) {}
 
 	public function raw_html($html) {}
 
@@ -420,7 +420,7 @@ class Base
 			$method = array_shift($c);
 			$pre_render and list($method, $c) = $pre_render($method, $c);
 
-			$field   = call_user_func_array(array($this, $method), $c);
+			$field = call_user_func_array(array($this, $method), $c);
 
 			$post_render and $field = $post_render($field);
 
