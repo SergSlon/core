@@ -40,8 +40,8 @@ if ( ! function_exists('array_to_attr'))
 			{
 				$property = $value;
 			}
-
-			if ($value === true)
+			// or if the value is true than it must be that way as well
+			elseif ($value === true)
 			{
 				$value = $property;
 			}
