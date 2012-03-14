@@ -29,8 +29,8 @@ if ( ! function_exists('array_to_attr'))
 
 		foreach ($attr as $property => $value)
 		{
-			// Ignore null values
-			if (is_null($value))
+			// Ignore null and false values
+			if (is_null($value) or $value === false)
 			{
 				continue;
 			}
@@ -39,6 +39,11 @@ if ( ! function_exists('array_to_attr'))
 			if (is_numeric($property))
 			{
 				$property = $value;
+			}
+
+			if ($value === true)
+			{
+				$value = $property;
 			}
 
 			$attr_str .= $property.'="'.$value.'" ';
