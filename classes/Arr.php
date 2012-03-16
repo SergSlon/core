@@ -518,6 +518,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Countable interface
 	 *
 	 * @return  int
+	 *
+	 * @since  2.0.0
 	 */
 	public function count()
 	{
@@ -529,6 +531,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @param   string|int  $offset
 	 * @return  bool
+	 *
+	 * @since  2.0.0
 	 */
 	public function offsetExists($offset)
 	{
@@ -540,6 +544,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @param   string|int  $offset
 	 * @return  mixed
+	 *
+	 * @since  2.0.0
 	 */
 	public function offsetGet($offset)
 	{
@@ -552,6 +558,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * @param   string|int  $offset
 	 * @param   mixed       $value
 	 * @return  void
+	 *
+	 * @since  2.0.0
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -563,6 +571,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @param   string|int  $offset
 	 * @return  void
+	 *
+	 * @since  2.0.0
 	 */
 	public function offsetUnset($offset)
 	{
@@ -573,6 +583,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Iterator Interface
 	 *
 	 * @return  mixed
+	 *
+	 * @since  2.0.0
 	 */
 	public function current()
 	{
@@ -583,6 +595,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Iterator Interface
 	 *
 	 * @return  string|int
+	 *
+	 * @since  2.0.0
 	 */
 	public function key()
 	{
@@ -593,6 +607,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Iterator Interface
 	 *
 	 * @return  void
+	 *
+	 * @since  2.0.0
 	 */
 	public function next()
 	{
@@ -603,6 +619,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Iterator Interface
 	 *
 	 * @return  mixed
+	 *
+	 * @since  2.0.0
 	 */
 	public function rewind()
 	{
@@ -613,6 +631,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * Implements Iterator Interface
 	 *
 	 * @return  bool
+	 *
+	 * @since  2.0.0
 	 */
 	public function valid()
 	{
