@@ -52,6 +52,26 @@ class Base
 	public function validate($key, $rule, array $args = array()) {}
 
 	/**
+	 * Accept outside input to create validations
+	 *
+	 * @param   Validatable  $validation
+	 * @return  Base
+	 *
+	 * @since  2.0.0
+	 */
+	public function add(Validatable $validation)
+	{
+		$validations = $validation->_validation();
+		foreach ($validations as $v)
+		{
+			list($key, $rule, $args) = $v;
+			$this->validate($key, $rule, $args);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Add an object or class in which validation rules may be found
 	 *
 	 * @param   object|string  $callable

@@ -162,9 +162,41 @@ class Base implements ArrayAccess, Iterator, Countable
 		return $this->_fields[$name];
 	}
 
-	public function form() {}
+	/**
+	 * This method should create a Form instance from the Fieldset information
+	 *
+	 * @return  \Fuel\Core\Form\Base
+	 *
+	 * @since  1.0.0
+	 */
+	public function form()
+	{
+		$form = $this->_app->forge('Form');
+		foreach ($this->_fields as $field)
+		{
+			$form->add($field);
+		}
 
-	public function validation() {}
+		return $form;
+	}
+
+	/**
+	 * This method should create a Validation instance from the Fieldset information
+	 *
+	 * @return  \Fuel\Core\Validation\Base
+	 *
+	 * @since  1.0.0
+	 */
+	public function validation()
+	{
+		$val = $this->_app->forge('Validation');
+		foreach ($this->_fields as $field)
+		{
+			$val->add($field->rules());
+		}
+
+		return $val;
+	}
 
 	/**
 	 * Implements Countable interface

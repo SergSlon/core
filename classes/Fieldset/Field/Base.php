@@ -10,6 +10,8 @@
 
 namespace Fuel\Core\Fieldset\Field;
 use Fuel\Core\Fieldset;
+use Fuel\Core\Form;
+use Fuel\Core\Validation;
 
 /**
  * Interface the field types must extend
@@ -18,7 +20,7 @@ use Fuel\Core\Fieldset;
  *
  * @since  2.0.0
  */
-abstract class Base
+abstract class Base implements Form\Inputable, Validation\Validatable
 {
 	/**
 	 * @var  \Fuel\Core\Fieldset\Base  fieldset to which the field belongs

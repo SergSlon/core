@@ -253,6 +253,33 @@ class Base
 	}
 
 	/**
+	 * Accept outside input to create fields
+	 *
+	 * @param   Inputable  $input
+	 * @return  Base
+	 *
+	 * @since  2.0.0
+	 */
+	public function add(Inputable $input)
+	{
+		$inputs = $input->_form();
+
+		foreach ($inputs as $i)
+		{
+			if ($i['type'] === 'select')
+			{
+				$this->select($i);
+			}
+			elseif ( ! empty($i['type']))
+			{
+				$this->input($i);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Create a input hidden field
 	 *
 	 * @param   string|array  $name
