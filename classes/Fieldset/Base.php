@@ -207,14 +207,20 @@ class Base implements ArrayAccess, Iterator, Countable
 	/**
 	 * Implements ArrayAccess interface, maps to add() method
 	 *
-	 * @param   string|int         $offset
-	 * @param   string|Field\Base  $value
+	 * @param   string|int  $offset
+	 * @param   Field\Base  $value
 	 * @return  void
+	 * @throws  \InvalidArgumentException
 	 *
 	 * @since  2.0.0
 	 */
 	public function offsetSet($offset, $value)
 	{
+		if ( ! $value instanceof Field\Base)
+		{
+			throw new \InvalidArgumentException('Direct setting only allowed with Field object instances.');
+		}
+
 		$this->add($offset, $value);
 	}
 
