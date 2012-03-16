@@ -13,18 +13,24 @@ require 'helpers.php';
 
 // Add some Core classes to the global DiC
 $env->dic->set_classes(array(
-	'Debug'                => 'Fuel\\Core\\Debug',
-	'Error'                => 'Fuel\\Core\\Error',
-	'Loader:Closure'       => 'Fuel\\Core\\Loader\\Closure',
-	'Loader:Lowercase'     => 'Fuel\\Core\\Loader\\Lowercase',
-	'Migration'            => 'Fuel\\Core\\Migration\\Base',
-	'Migration_Container'  => 'Fuel\\Core\\Migration\\Container\\Base',
+	'Debug'                   => 'Fuel\\Core\\Debug',
+	'Error'                   => 'Fuel\\Core\\Error',
+	'Loader:Closure'          => 'Fuel\\Core\\Loader\\Closure',
+	'Loader:Lowercase'        => 'Fuel\\Core\\Loader\\Lowercase',
+	'Fieldset'                => 'Fuel\\Core\\Fieldset\\Base',
+	'Fieldset_Field_Button'   => 'Fuel\\Core\\Fieldset\\Field\\Button',
+	'Fieldset_Field_Options'  => 'Fuel\\Core\\Fieldset\\Field\\Options',
+	'Fieldset_Field_Test'     => 'Fuel\\Core\\Fieldset\\Field\\Text',
+	'Form'                    => 'Fuel\\Core\\Form\\Base',
+	'Migration'               => 'Fuel\\Core\\Migration\\Base',
+	'Migration_Container'     => 'Fuel\\Core\\Migration\\Container\\Base',
 	'Migration_Container_Storage'  => 'Fuel\\Core\\Migration\\Container\\Storage\\Base',
-	'Profiler'             => 'Fuel\\Core\\Profiler',
-	'Request:Curl'         => 'Fuel\\Core\\Request\\Curl',
-	'Security_String:Xss'  => 'Fuel\\Core\\Security\\String\\Xss',
-	'View:Markdown'        => 'Fuel\\Core\\View\\Markdown',
-	'View:Twig'            => 'Fuel\\Core\\View\\Twig',
+	'Profiler'                => 'Fuel\\Core\\Profiler',
+	'Request:Curl'            => 'Fuel\\Core\\Request\\Curl',
+	'Security_String:Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
+	'Validation'              => 'Fuel\\Core\\Validation\\Base',
+	'View:Markdown'           => 'Fuel\\Core\\View\\Markdown',
+	'View:Twig'               => 'Fuel\\Core\\View\\Twig',
 ));
 
 // Forge and return the Core Package object
