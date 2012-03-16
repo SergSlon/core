@@ -191,21 +191,21 @@ class Base
 	 */
 	public function input($name, $value = null, array $attributes = array())
 	{
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('input', $name, $value, $attributes);
-			return $this;
-		}
-
 		if (is_array($name))
 		{
-			$attributes += $name;
+			$attributes = $name + $attributes;
 			! array_key_exists('value', $attributes) and $attributes['value'] = $value;
 		}
 		else
 		{
 			$attributes['name'] = (string) $name;
 			$attributes['value'] = (string) $value;
+		}
+
+		if ( ! $this->config['direct_output'])
+		{
+			$this->contents[] = array('input', $attributes);
+			return $this;
 		}
 
 		// Default to 'text' when no type was set
@@ -405,13 +405,165 @@ class Base
 		return $this->input($name, $value, $attributes);
 	}
 
-	public function select($name, $value = '', array $options = array(), array $attributes = array()) {}
+	/**
+	 * Create a select input
+	 *
+	 * @param   string|array  $name
+	 * @param   string        $value
+	 * @param   array         $options
+	 * @param   array         $attributes
+	 * @return  Base|string
+	 * @throws  \InvalidArgumentException
+	 *
+	 * @since  1.0.0
+	 */
+	public function select($name, $value = '', array $options = array(), array $attributes = array())
+	{
+		if (is_array($name))
+		{
+			$attributes = $name + $attributes;
+			if ( ! isset($attributes['selected']))
+			{
+				$attributes['selected'] = isset($attributes['value']) ? $attributes['value'] : $value;
+			}
+			! array_key_exists('options', $attributes) and $attributes['options'] = $value;
+		}
+		else
+		{
+			$attributes['name']      = (string) $name;
+			$attributes['selected']  = $value;
+			$attributes['options']   = (array) $options;
+		}
+		unset($attributes['value']);
 
-	public function option($value = '', $label = '', $selected = false, array $attributes = array()) {}
+		if ( ! $this->config['direct_output'])
+		{
+			$this->contents[] = array('select', $attributes);
+			return $this;
+		}
 
-	public function optgroup($value = '', $label = '', array $attributes = array()) {}
+		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
+		{
+			throw new \InvalidArgumentException('Select element "'.$attributes['name'].'" is either missing the '
+				.'"options" or "options" is not array.');
+		}
+		$options = $attributes['options'];
+		unset($attributes['options']);
 
-	public function raw_html($html) {}
+		// Get the selected options then unset it from the array
+		$selected = ! isset($attributes['selected']) ? array() : array_map(function($a) {
+			return (string) $a;
+		}, array_values((array) $attributes['selected']));
+		unset($attributes['selected']);
+
+		$input = PHP_EOL;
+		foreach ($options as $key => $val)
+		{
+			if (is_array($val))
+			{
+				$input .= $this->optgroup($val, $key, $selected, $attributes);
+			}
+			else
+			{
+				$input .= $this->option($val, $key, in_array((string) $key, $selected, true), $attributes);
+			}
+		}
+
+		if (empty($attributes['id']) and $this->config['auto_id'])
+		{
+			$attributes['id'] = $this->config['auto_id_prefix'].$attributes['name'];
+		}
+
+		// Allow overwrite of default tag used
+		$tag = ! empty($attributes['tag']) ? $attributes['tag'] : 'select';
+		unset($attributes['tag']);
+
+		return html_tag($tag, $attributes, $input);
+	}
+
+	/**
+	 * Create an option tag within a select input
+	 *
+	 * @param   string  $value
+	 * @param   string  $label
+	 * @param   bool    $selected
+	 * @param   array   $attributes
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function option($value, $label, $selected, array $attributes)
+	{
+		if ($this->config['prep_value'] and empty($attributes['dont_prep']))
+		{
+			$value = $this->security_clean($value);
+			$label = $this->security_clean($label);
+		}
+
+		$attrs = array('value' => $value, 'selected' => $selected);
+		isset($attributes['option_attributes']) and $attrs += $attributes['option_attributes'];
+
+		// Allow overwrite of default tag used
+		$tag = ! empty($attrs['tag']) ? $attrs['tag'] : 'option';
+		unset($attrs['tag']);
+
+		return html_tag($tag, $attrs, $label).PHP_EOL;
+	}
+
+	/**
+	 * Create an optgroup tag within a select input
+	 *
+	 * @param   array   $options
+	 * @param   string  $label
+	 * @param   array   $selected
+	 * @param   array   $attributes
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function optgroup(array $options, $label, $selected, array $attributes)
+	{
+		$input = '';
+		foreach ($options as $option => $label)
+		{
+			if (is_array($label))
+			{
+				$input .= $this->optgroup($label, $option, $selected, $attributes);
+			}
+			else
+			{
+				$input .= $this->option($label, $option, in_array((string) $option, $selected, true), $attributes);
+			}
+		}
+
+		$attrs = array();
+		isset($attributes['optgroup_attributes']) and $attrs += $attributes['optgroup_attributes'];
+
+		// Allow overwrite of default tag used
+		$tag = ! empty($attrs['tag']) ? $attrs['tag'] : 'optgroup';
+		unset($attrs['tag']);
+
+		return html_tag($tag, $attrs, $label).PHP_EOL;
+	}
+
+	/**
+	 * Just unedited HTML
+	 *
+	 * @param   string  $html
+	 * @return  Base
+	 *
+	 * @since  2.0.0
+	 */
+	public function raw_html($html)
+	{
+		if ( ! $this->config['direct_output'])
+		{
+			$this->contents[] = array('raw_html', $html);
+			return $this;
+		}
+
+		return $html;
+	}
 
 	/**
 	 * Use string security on value
