@@ -10,6 +10,8 @@
 
 namespace Fuel\Core\Fieldset;
 use Fuel\Kernel\Application;
+use Fuel\Core\Form;
+use Fuel\Core\Validation;
 use ArrayAccess;
 use Countable;
 use Iterator;
@@ -21,7 +23,7 @@ use Iterator;
  *
  * @since  2.0.0
  */
-class Base implements ArrayAccess, Iterator, Countable
+class Base implements Form\Inputable, Validation\Validatable, ArrayAccess, Iterator, Countable
 {
 	/**
 	 * @var  \Fuel\Kernel\Application\Base  app that created this request
@@ -163,39 +165,41 @@ class Base implements ArrayAccess, Iterator, Countable
 	}
 
 	/**
-	 * This method should create a Form instance from the Fieldset information
+	 * Implements Inputable interface
+	 * Returns a Form instance with inputs generated based on this Fieldset.
 	 *
-	 * @return  \Fuel\Core\Form\Base
+	 * @return  array
 	 *
-	 * @since  1.0.0
+	 * @since  2.0.0
 	 */
-	public function form()
+	public function _form()
 	{
-		$form = $this->_app->forge('Form');
+		$inputs = array();
 		foreach ($this->_fields as $field)
 		{
-			$form->add($field);
+			$inputs += $field->_form();
 		}
 
-		return $form;
+		return $inputs;
 	}
 
 	/**
-	 * This method should create a Validation instance from the Fieldset information
+	 * Implements Validatable interface
+	 * Returns a Validation instance with validations generated based on this Fieldset.
 	 *
-	 * @return  \Fuel\Core\Validation\Base
+	 * @return  array
 	 *
-	 * @since  1.0.0
+	 * @since  2.0.0
 	 */
-	public function validation()
+	public function _validation()
 	{
-		$val = $this->_app->forge('Validation');
+		$validations = array();
 		foreach ($this->_fields as $field)
 		{
-			$val->add($field->rules());
+			$validations += $field->_validation();
 		}
 
-		return $val;
+		return $validations;
 	}
 
 	/**
