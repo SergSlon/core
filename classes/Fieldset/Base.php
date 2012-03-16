@@ -314,6 +314,11 @@ class Base implements ArrayAccess, Iterator, Countable
 	 */
 	public function __get($name)
 	{
+		if (strncmp($name, '_', 1) === 0)
+		{
+			throw new \OutOfBoundsException('Cannot access protected object properties.');
+		}
+
 		return $this->offsetGet($name);
 	}
 
@@ -328,6 +333,11 @@ class Base implements ArrayAccess, Iterator, Countable
 	 */
 	public function __set($name, $field)
 	{
+		if (strncmp($name, '_', 1) === 0)
+		{
+			throw new \OutOfBoundsException('Cannot set protected object properties.');
+		}
+
 		$this->offsetSet($name, $field);
 	}
 
