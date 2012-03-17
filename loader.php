@@ -15,8 +15,8 @@ require 'helpers.php';
 $env->dic->set_classes(array(
 	'Debug'                   => 'Fuel\\Core\\Debug',
 	'Error'                   => 'Fuel\\Core\\Error',
-	'Loader:Closure'          => 'Fuel\\Core\\Loader\\Closure',
-	'Loader:Lowercase'        => 'Fuel\\Core\\Loader\\Lowercase',
+	'Loader.Closure'          => 'Fuel\\Core\\Loader\\Closure',
+	'Loader.Lowercase'        => 'Fuel\\Core\\Loader\\Lowercase',
 	'Fieldset'                => 'Fuel\\Core\\Fieldset\\Base',
 	'Fieldset_Field_Button'   => 'Fuel\\Core\\Fieldset\\Field\\Button',
 	'Fieldset_Field_Options'  => 'Fuel\\Core\\Fieldset\\Field\\Options',
@@ -26,15 +26,15 @@ $env->dic->set_classes(array(
 	'Migration_Container'     => 'Fuel\\Core\\Migration\\Container\\Base',
 	'Migration_Container_Storage'  => 'Fuel\\Core\\Migration\\Container\\Storage\\Base',
 	'Profiler'                => 'Fuel\\Core\\Profiler',
-	'Request:Curl'            => 'Fuel\\Core\\Request\\Curl',
-	'Security_String:Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
+	'Request.Curl'            => 'Fuel\\Core\\Request\\Curl',
+	'Security_String.Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
 	'Validation'              => 'Fuel\\Core\\Validation\\Base',
-	'View:Markdown'           => 'Fuel\\Core\\View\\Markdown',
-	'View:Twig'               => 'Fuel\\Core\\View\\Twig',
+	'View.Markdown'           => 'Fuel\\Core\\View\\Markdown',
+	'View.Twig'               => 'Fuel\\Core\\View\\Twig',
 ));
 
 // Forge and return the Core Package object
-return $env->forge('Loader:Package')
+return $env->forge('Loader.Package')
 	->set_path(__DIR__)
 	->set_namespace(false)
 	->add_classes(array(

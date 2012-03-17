@@ -239,7 +239,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function flatten($glue = ':', $indexed = true)
+	public function flatten($glue = '.', $indexed = true)
 	{
 		$return = array();
 		$curr_key = array();
@@ -273,7 +273,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function flatten_assoc($glue = ':', $reset = true)
+	public function flatten_assoc($glue = '.', $reset = true)
 	{
 		return $this->flatten($glue, $reset, false);
 	}
