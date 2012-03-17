@@ -32,23 +32,37 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	/**
 	 * @var  string  name of the field in the fieldset
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	protected $name;
 
 	/**
+	 * @var  string  label of the field
+	 *
+	 * @since  1.0.0
+	 */
+	protected $label;
+
+	/**
 	 * @var  string  subtype of the Field
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	protected $type;
+
+	/**
+	 * @var  string  current value of the Field
+	 *
+	 * @since  1.0.0
+	 */
+	protected $value;
 
 	/**
 	 * Constructor
 	 *
 	 * @param  string  $subtype
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct($subtype)
 	{
@@ -108,14 +122,63 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 		return $this;
 	}
 
-	abstract public function set_type();
+	/**
+	 * Set the subtype of this Field
+	 *
+	 * @param   string  $type
+	 * @return  Base
+	 *
+	 * @since  1.0.0
+	 */
+	abstract public function set_type($type);
 
-	public function set_label() {}
+	/**
+	 * Set label and translate when enabled, through config or by second param
+	 *
+	 * @param   string|array  $label
+	 * @param   null|bool     $translate
+	 * @return  Base
+	 * @throws  \InvalidArgumentException
+	 *
+	 * @since  1.0.0
+	 */
+	public function set_label($label, $translate = null)
+	{
+		! is_array($label) and $label = array('value' => $label);
 
-	public function set_value() {}
+		if ( ! isset($label['value']))
+		{
+			throw new \InvalidArgumentException('A label must be given either as a string or as the value key in the array.');
+		}
 
-	public function populate() {}
+		is_null($translate) and $translate = $this->fieldset->_config['translate'];
+		$translate and $label['value'] = $this->fieldset->_app->language($label['value'], $label['value']);
+		$this->label = $label;
 
+		return $this;
+	}
+
+	/**
+	 * Change the current value of this field
+	 *
+	 * @param   mixed  $value
+	 * @return  Base
+	 *
+	 * @since  1.0.0
+	 */
+	public function set_value($value)
+	{
+		$this->value = $value;
+		return $this;
+	}
+
+	/**
+	 * Create output HTML based on this field
+	 *
+	 * @return  string
+	 *
+	 * @since  1.0.0
+	 */
 	abstract public function render();
 
 	/**

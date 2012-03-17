@@ -33,6 +33,13 @@ class Base implements Form\Inputable, Validation\Validatable, ArrayAccess, Itera
 	public $_app;
 
 	/**
+	 * @var  \Fuel\Kernel\Data\Config
+	 *
+	 * @since  2.0.0
+	 */
+	public $_config;
+
+	/**
 	 * @var  array  associative array of field objects indexed by their fieldname
 	 *
 	 * @since  1.0.0
@@ -50,6 +57,26 @@ class Base implements Form\Inputable, Validation\Validatable, ArrayAccess, Itera
 	public function _set_app(Application\Base $app)
 	{
 		$this->_app = $app;
+
+		// Check if already created
+		try
+		{
+			$this->_config = clone $app->get_object('Config', 'fieldset');
+		}
+		catch (\RuntimeException $e)
+		{
+			$this->_config = $app->forge('Config');
+		}
+
+		$this->_config
+			// Set defaults
+			->add(array(
+				'translate' => true,
+			))
+			// Add validators
+			->validators(array(
+				'translate' => 'is_bool',
+			));
 	}
 
 	/**
