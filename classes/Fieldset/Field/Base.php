@@ -197,15 +197,6 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	}
 
 	/**
-	 * Create output HTML based on this field
-	 *
-	 * @return  string
-	 *
-	 * @since  1.0.0
-	 */
-	abstract public function render();
-
-	/**
 	 * Export fields into an array for the Form class
 	 *
 	 * @return  array
@@ -265,17 +256,5 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	{
 		$this->fieldset  = null;
 		$this->name      = null;
-	}
-
-	/**
-	 * Magic method for Field to string conversion;
-	 *
-	 * @return  string
-	 *
-	 * @since  1.0.0
-	 */
-	public function __toString()
-	{
-		return $this->render();
 	}
 }
