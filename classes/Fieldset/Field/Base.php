@@ -58,6 +58,16 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	protected $value;
 
 	/**
+	 * @var  array  validations in the form array(rule, additional_args)
+	 */
+	protected $rules = array();
+
+	/**
+	 * @var  array  valid field subtypes
+	 */
+	protected $_valid_types = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param  string  $subtype
@@ -130,7 +140,16 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	 *
 	 * @since  1.0.0
 	 */
-	abstract public function set_type($type);
+	public function set_type($type)
+	{
+		if ( ! in_array($type, $this->_valid_types))
+		{
+			throw new \OutOfBoundsException('Invalid type set on Field.');
+		}
+		$this->type = $type;
+
+		return $this;
+	}
 
 	/**
 	 * Set label and translate when enabled, through config or by second param
@@ -172,6 +191,11 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 		return $this;
 	}
 
+	public function add_rule($rule, array $args = array())
+	{
+		$this->rules[] = array($rule, $args);
+	}
+
 	/**
 	 * Create output HTML based on this field
 	 *
@@ -180,6 +204,57 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 	 * @since  1.0.0
 	 */
 	abstract public function render();
+
+	/**
+	 * Export fields into an array for the Form class
+	 *
+	 * @return  array
+	 *
+	 * @since  2.0.0
+	 */
+	public function _form()
+	{
+		// Create the label element
+		$label = array(
+			'label',
+			array(
+				'value' => $this->label,
+			),
+		);
+
+		// Create the input element
+		$field = array(
+			'input',
+			array(
+				'name' => $this->name,
+				'type' => $this->type,
+				'value' => $this->value,
+			),
+		);
+
+		// @todo attributes, id, for, etc...
+		// @todo add support for a closure processing the arrays before they are returned
+
+		return array($label, $field);
+	}
+
+	/**
+	 * Export fields into an array for the Validation class
+	 *
+	 * @return  array
+	 *
+	 * @since  2.0.0
+	 */
+	public function _validation()
+	{
+		$rules = $this->rules;
+		foreach ($rules as $rule)
+		{
+			count($rule) < 3 and array_unshift($rule, $this->name);
+		}
+
+		return array($rules);
+	}
 
 	/**
 	 * Prevent parent Fieldset and name from being copied
