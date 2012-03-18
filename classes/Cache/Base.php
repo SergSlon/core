@@ -247,7 +247,7 @@ class Base
 			}
 		}
 
-		return $this->get_content();
+		return $this->content;
 	}
 
 	/**
@@ -271,49 +271,7 @@ class Base
 			$this->set($callback(), $lifetime, $dependencies);
 		}
 
-		return $this->get_content();
-	}
-
-	/**
-	 * Set the contents with optional handler instead of the default
-	 *
-	 * @param   mixed   $content
-	 * @param   string  $formatter
-	 * @return  Base
-	 *
-	 * @since  1.0.0
-	 */
-	public function set_content($content, $formatter = null)
-	{
-		$this->set_format_driver($formatter);
-		$this->content = $this->format_driver()->encode($content);
-		return $this;
-	}
-
-	/**
-	 * Fetches content
-	 *
-	 * @return  mixed
-	 *
-	 * @since  1.0.0
-	 */
-	public function get_content()
-	{
-		return $this->format_driver()->decode($this->content);
-	}
-
-	/**
-	 * Decides a content handler that makes it possible to write non-strings to a file
-	 *
-	 * @param   string|null  $formatter
-	 * @return  Base
-	 *
-	 * @since  2.0.0
-	 */
-	protected function set_format_driver($formatter)
-	{
-		! is_null($formatter) and $this->format_driver = $this->app->get_object('Cache_Format.'.$formatter);
-		return $this;
+		return $this->content;
 	}
 
 	/**
@@ -336,5 +294,114 @@ class Base
 		}
 
 		return $this->format_driver;
+	}
+
+	/**
+	 * Set the contents with optional handler instead of the default
+	 *
+	 * @param   mixed   $content
+	 * @param   string  $formatter
+	 * @return  Base
+	 *
+	 * @since  1.0.0
+	 */
+	public function set_content($content, $formatter = null)
+	{
+		$this->content = $content;
+		(func_num_args() > 1) and $this->set_format_driver($formatter);
+		return $this;
+	}
+
+	/**
+	 * Decides a content handler that makes it possible to write non-strings to a file
+	 *
+	 * @param   string|null  $formatter
+	 * @return  Base
+	 *
+	 * @since  2.0.0
+	 */
+	public function set_format_driver($formatter)
+	{
+		$this->format_driver = ! is_null($formatter) ? $this->app->get_object('Cache_Format.'.$formatter) : null;
+		return $this;
+	}
+
+	/**
+	 * Change the creation date
+	 *
+	 * @param   int  $created  omit for time(), otherwise valid UNIX timestamp
+	 * @return  Base
+	 */
+	public function set_created($created)
+	{
+		$this->created = func_num_args() > 0 ? $created : time();
+		return $this;
+	}
+
+	/**
+	 * Change the lifetime
+	 *
+	 * @param   int|null  $lifetime  null for config default, int > 0 for lifetime, <= 0 for no expiration
+	 * @return  Base
+	 */
+	public function set_lifetime($lifetime)
+	{
+		$this->lifetime = ! is_null($lifetime) ? ($lifetime > 0 ? $lifetime : 0) : null;
+		return $this;
+	}
+
+	/**
+	 * Add dependencies
+	 *
+	 * @param   array  $dependencies
+	 * @return  Base
+	 */
+	public function set_dependencies(array $dependencies)
+	{
+		$this->dependencies = $dependencies;
+		return $this;
+	}
+
+	/**
+	 * PHP magic setter, only allows setting properties that have setters
+	 *
+	 * @param   string  $prop
+	 * @param   mixed   $value
+	 * @return  void
+	 * @throws  \OutOfBoundsException
+	 *
+	 * @since  2.0.0
+	 */
+	public function __set($prop, $value)
+	{
+		if (method_exists($this, $method = 'set_'.$prop))
+		{
+			$this->{$method}($value);
+		}
+
+		throw new \OutOfBoundsException('Invalid or inaccessible Cache object property.');
+	}
+
+	/**
+	 * PHP magic getter, allows getting properties with getters or directly
+	 *
+	 * @param   string  $prop
+	 * @return  mixed
+	 * @throws  \OutOfBoundsException
+	 *
+	 * @since  2.0.0
+	 */
+	public function __get($prop)
+	{
+		if (method_exists($this, $method = 'get_'.$prop))
+		{
+			return $this->{$method}();
+		}
+		elseif (property_exists($this, $prop))
+		{
+			return $this->{$prop};
+		}
+
+		throw new \OutOfBoundsException('Invalid Cache object property.');
 	}
 }
