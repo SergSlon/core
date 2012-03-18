@@ -10,6 +10,7 @@
 
 namespace Fuel\Core\Form;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\View;
 
 /**
  * Form HTML builder class
@@ -32,9 +33,10 @@ class Base
 	 */
 	public $config;
 
+	/**
+	 * @var  array  methods and variables to call for delayed generation
+	 */
 	protected $contents = array();
-
-	protected $output = false;
 
 	/**
 	 * Magic Fuel method that is the setter for the current app
@@ -63,6 +65,7 @@ class Base
 			->add(array(
 				'direct_output' => false,
 				'security_clean' => true,
+				'parser' => 'Parser.Form',
 				'auto_id' => true,
 				'auto_id_prefix' => 'form_',
 				'button_as_input' => false,
@@ -73,6 +76,26 @@ class Base
 					'reset', 'search', 'submit', 'tel', 'text', 'time',
 					'url', 'week'
 				),
+
+				// General templates
+				'tpl_form' => null,
+				'tpl_fieldset' => null,
+				'tpl_hidden' => null,
+				'tpl_label' => null,
+				'tpl_raw_html' => null,
+
+				// Specific type templates
+				'tpl_button' => null,
+				'tpl_checkbox' => null,
+				'tpl_password' => null,
+				'tpl_radio' => null,
+				'tpl_select' => null,
+				'tpl_text' => null,
+				'tpl_textarea' => null,
+
+				// Subtemplates for select
+				'tpl_option' => null,
+				'tpl_optgroup' => null,
 			))
 			// Add validators
 			->validators(array(
@@ -185,11 +208,11 @@ class Base
 	 * @param   string|array  $name  either fieldname or attributes array
 	 * @param   string        $value
 	 * @param   array         $attributes
-	 * @return  string|Base
+	 * @return  array
 	 *
-	 * @since  1.0.0
+	 * @since  2.0.0
 	 */
-	public function input($name, $value = null, array $attributes = array())
+	protected function input($name, $value = null, array $attributes = array())
 	{
 		if (is_array($name))
 		{
@@ -247,9 +270,38 @@ class Base
 			}
 		}
 
-		$output = html_tag($tag, $attributes, $content);
+		return array(
+			'tag' => $tag,
+			'attributes' => $attributes,
+			'content' => $content,
+		);
+	}
 
-		return $output;
+	/**
+	 * Templates method output
+	 *
+	 * @param   string  $tpl
+	 * @param   array   $vars
+	 * @return  string
+	 */
+	protected function _template($tpl, array $vars)
+	{
+		if ($tpl = $this->config['tpl_'.$tpl])
+		{
+			if ($tpl instanceof View\Viewable)
+			{
+				foreach ($vars as $k => $v)
+				{
+					$tpl->{$k} = $v;
+				}
+				return $tpl;
+			}
+
+			$parser = $this->app->get_object($this->config['parser']);
+			return $parser->parse_string($tpl, $vars);
+		}
+
+		return html_tag($vars['tag'], $vars['attributes'], $vars['content']);
 	}
 
 	/**
@@ -292,7 +344,9 @@ class Base
 	public function hidden($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'hidden';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('hidden', $input);
 	}
 
 	/**
@@ -308,7 +362,9 @@ class Base
 	public function text($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'text';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('text', $input);
 	}
 
 	/**
@@ -324,7 +380,9 @@ class Base
 	public function password($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'password';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('password', $input);
 	}
 
 	/**
@@ -340,7 +398,9 @@ class Base
 	public function textarea($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'textarea';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('textarea', $input);
 	}
 
 	/**
@@ -356,7 +416,9 @@ class Base
 	public function button($name, $value = '', array $attributes = array())
 	{
 		$this->config['button_as_input'] ? $attributes['type'] = 'button' : $attributes['tag'] = 'button';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('button', $input);
 	}
 
 	/**
@@ -379,7 +441,9 @@ class Base
 		}
 
 		$attributes['type'] = 'radio';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('radio', $input);
 	}
 
 	/**
@@ -402,11 +466,14 @@ class Base
 		}
 
 		$attributes['type'] = 'checkbox';
-		return $this->input($name, $value, $attributes);
+		$input = $this->input($name, $value, $attributes);
+
+		return $input === $this ? $this : $this->_template('checkbox', $input);
 	}
 
 	/**
 	 * Create a select input
+	 * @todo properly refactor this to work with input() method for preprocessing
 	 *
 	 * @param   string|array  $name
 	 * @param   string        $value
@@ -419,34 +486,22 @@ class Base
 	 */
 	public function select($name, $value = '', array $options = array(), array $attributes = array())
 	{
-		if (is_array($name))
-		{
-			$attributes = $name + $attributes;
-			if ( ! isset($attributes['selected']))
-			{
-				$attributes['selected'] = isset($attributes['value']) ? $attributes['value'] : $value;
-			}
-			! array_key_exists('options', $attributes) and $attributes['options'] = $value;
-		}
-		else
-		{
-			$attributes['name']      = (string) $name;
-			$attributes['selected']  = $value;
-			$attributes['options']   = (array) $options;
-		}
-		unset($attributes['value']);
-
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('select', $attributes);
-			return $this;
-		}
-
+		! isset($attributes['options']) and $attributes['options'] = (array) $options;
 		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
 		{
 			throw new \InvalidArgumentException('Select element "'.$attributes['name'].'" is either missing the '
 				.'"options" or "options" is not array.');
 		}
+
+		! isset($attributes['selected']) and $attributes['selected'] = (array) $value;
+		$attributes = $this->input($name, '', $attributes);
+
+		if ($attributes === $this)
+		{
+			return $this;
+		}
+
+		unset($attributes['value']);
 		$options = $attributes['options'];
 		unset($attributes['options']);
 
@@ -468,15 +523,6 @@ class Base
 				$input .= $this->option($val, $key, in_array((string) $key, $selected, true), $attributes);
 			}
 		}
-
-		if (empty($attributes['id']) and $this->config['auto_id'])
-		{
-			$attributes['id'] = $this->config['auto_id_prefix'].$attributes['name'];
-		}
-
-		// Allow overwrite of default tag used
-		$tag = ! empty($attributes['tag']) ? $attributes['tag'] : 'select';
-		unset($attributes['tag']);
 
 		return html_tag($tag, $attributes, $input);
 	}
@@ -563,6 +609,37 @@ class Base
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Set a template
+	 *
+	 * @param   string  $type
+	 * @param   string|\Fuel\Kernel\View\Viewable  $template
+	 * @return  Base
+	 *
+	 * @since  2.0.0
+	 */
+	public function set_template($type, $template)
+	{
+		$type = 'tpl_'.$type;
+		! $template instanceof View\Viewable and $template = strval($template);
+		$this->config[$type] = $template;
+
+		return $this;
+	}
+
+	/**
+	 * Fetch a template when set, null for no template set
+	 *
+	 * @param   string  $type
+	 * @return  null|string|\Fuel\Kernel\View\Viewable
+	 *
+	 * @since  2.0.0
+	 */
+	public function get_template($type)
+	{
+		return $this->config[$type];
 	}
 
 	/**

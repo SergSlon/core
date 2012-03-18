@@ -13,14 +13,20 @@ require 'helpers.php';
 
 // Add some Core classes to the global DiC
 $env->dic->set_classes(array(
+	'Cache'                   => 'Fuel\\Core\\Cache\\Base',
+	'Cache_Format'            => 'Fuel\\Core\\Cache\\Storage\\Serialize',
+	'Cache_Format.Json'       => 'Fuel\\Core\\Cache\\Storage\\Json',
+	'Cache_Format.Serialize'  => 'Fuel\\Core\\Cache\\Storage\\Serialize',
+	'Cache_Format.String'     => 'Fuel\\Core\\Cache\\Storage\\String',
+	'Cache_Storage'           => 'Fuel\\Core\\Cache\\Storage\\File',
 	'Debug'                   => 'Fuel\\Core\\Debug',
 	'Error'                   => 'Fuel\\Core\\Error',
 	'Loader.Closure'          => 'Fuel\\Core\\Loader\\Closure',
 	'Loader.Lowercase'        => 'Fuel\\Core\\Loader\\Lowercase',
 	'Fieldset'                => 'Fuel\\Core\\Fieldset\\Base',
-	'Fieldset_Field_Button'   => 'Fuel\\Core\\Fieldset\\Field\\Button',
-	'Fieldset_Field_Options'  => 'Fuel\\Core\\Fieldset\\Field\\Options',
-	'Fieldset_Field_Test'     => 'Fuel\\Core\\Fieldset\\Field\\Text',
+	'Fieldset_Field.Button'   => 'Fuel\\Core\\Fieldset\\Field\\Button',
+	'Fieldset_Field.Options'  => 'Fuel\\Core\\Fieldset\\Field\\Options',
+	'Fieldset_Field.Text'     => 'Fuel\\Core\\Fieldset\\Field\\Text',
 	'Form'                    => 'Fuel\\Core\\Form\\Base',
 	'Migration'               => 'Fuel\\Core\\Migration\\Base',
 	'Migration_Container'     => 'Fuel\\Core\\Migration\\Container\\Base',
@@ -38,6 +44,14 @@ return $env->forge('Loader.Package')
 	->set_path(__DIR__)
 	->set_namespace(false)
 	->add_classes(array(
+		'Fuel\\Core\\Cache\\Exception\\Expired' => __DIR__.'/classes/Cache/Exception/Expired.php',
+		'Fuel\\Core\\Cache\\Exception\\NotFound' => __DIR__.'/classes/Cache/Exception/NotFound.php',
+		'Fuel\\Core\\Cache\\Format\\Formatable' => __DIR__.'/classes/Cache/Format/Formatable.php',
+		'Fuel\\Core\\Cache\\Format\\Json' => __DIR__.'/classes/Cache/Format/Json.php',
+		'Fuel\\Core\\Cache\\Format\\Serialize' => __DIR__.'/classes/Cache/Format/Serialize.php',
+		'Fuel\\Core\\Cache\\Format\\String' => __DIR__.'/classes/Cache/Format/String.php',
+		'Fuel\\Core\\Cache\\Storage\\Storable' => __DIR__.'/classes/Cache/Storage/Storable.php',
+		'Fuel\\Core\\Cache\\Base' => __DIR__.'/classes/Cache/Base.php',
 		'Fuel\\Core\\Controller\\Template' => __DIR__.'/classes/Controller/Template.php',
 		'Fuel\\Core\\Loader\\Closure' => __DIR__.'/classes/Loader/Closure.php',
 		'Fuel\\Core\\Loader\\Lowercase' => __DIR__.'/classes/Loader/Lowercase.php',

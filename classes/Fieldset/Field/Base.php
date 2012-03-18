@@ -191,6 +191,15 @@ abstract class Base implements Form\Inputable, Validation\Validatable
 		return $this;
 	}
 
+	/**
+	 * Adds a Validation rule and optional additional parameters
+	 *
+	 * @param   callback  $rule
+	 * @param   array     $args
+	 * @return  Base
+	 *
+	 * @since  1.0.0
+	 */
 	public function add_rule($rule, array $args = array())
 	{
 		$this->rules[] = array($rule, $args);
