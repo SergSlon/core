@@ -49,6 +49,18 @@ class Base
 	protected $migrations = array();
 
 	/**
+	 * Constructor
+	 *
+	 * @param  array|\Fuel\Kernel\Data\Config  $config
+	 *
+	 * @since  1.0.0
+	 */
+	public function __construct($config = null)
+	{
+		$this->config = $config;
+	}
+
+	/**
 	 * Magic Fuel method that is the setter for the current app
 	 *
 	 * @param   \Fuel\Kernel\Application\Base  $app
@@ -59,16 +71,7 @@ class Base
 	public function _set_app(Application\Base $app)
 	{
 		$this->app = $app;
-
-		// Check if already created
-		try
-		{
-			$this->config = clone $app->get_object('Config', 'migrations');
-		}
-		catch (\RuntimeException $e)
-		{
-			$this->config = $app->forge('Config');
-		}
+		$this->config = $app->forge('Object_Config', 'migrations', $this->config);
 
 		$this->config
 			// Set defaults

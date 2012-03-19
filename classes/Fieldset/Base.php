@@ -47,6 +47,18 @@ class Base implements Form\Inputable, Validation\Validatable, ArrayAccess, Itera
 	protected $_fields = array();
 
 	/**
+	 * Constructor
+	 *
+	 * @param  array|\Fuel\Kernel\Data\Config  $config
+	 *
+	 * @since  1.0.0
+	 */
+	public function __construct($config = null)
+	{
+		$this->_config = $config;
+	}
+
+	/**
 	 * Magic Fuel method that is the setter for the current app
 	 *
 	 * @param   \Fuel\Kernel\Application\Base  $app
@@ -57,16 +69,7 @@ class Base implements Form\Inputable, Validation\Validatable, ArrayAccess, Itera
 	public function _set_app(Application\Base $app)
 	{
 		$this->_app = $app;
-
-		// Check if already created
-		try
-		{
-			$this->_config = clone $app->get_object('Config', 'fieldset');
-		}
-		catch (\RuntimeException $e)
-		{
-			$this->_config = $app->forge('Config');
-		}
+		$this->_config = $app->forge('Object_Config', 'fieldset', $this->_config);
 
 		$this->_config
 			// Set defaults

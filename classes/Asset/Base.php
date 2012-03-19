@@ -100,22 +100,7 @@ class Base
 		unset($this->config['folders']);
 
 		// Order of this addition is important, do not change this.
-		if (isset($this->config))
-		{
-			! $this->config instanceof Data\Config
-				and $this->config = $app->forge('Config', $this->config);
-		}
-		else
-		{
-			try
-			{
-				$this->config = clone $app->get_object('Config', 'asset');
-			}
-			catch (\RuntimeException $e)
-			{
-				$this->config = $app->forge('Config');
-			}
-		}
+		$this->config = $app->forge('Object_Config', 'asset', $this->config);
 
 		$this->config
 			// Set defaults

@@ -113,24 +113,7 @@ class Base
 	public function _set_app(Application\Base $app)
 	{
 		$this->app = $app;
-
-		// Order of this addition is important, do not change this.
-		if (isset($this->config))
-		{
-			! $this->config instanceof Data\Config
-				and $this->config = $app->forge('Config', $this->config);
-		}
-		else
-		{
-			try
-			{
-				$this->config = clone $app->get_object('Config', 'theme');
-			}
-			catch (\RuntimeException $e)
-			{
-				$this->config = $app->forge('Config');
-			}
-		}
+		$this->config = $app->forge('Object_Config', 'theme', $this->config);
 
 		$this->config
 			// Set defaults
