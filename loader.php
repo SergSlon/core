@@ -13,6 +13,7 @@ require 'helpers.php';
 
 // Add some Core classes to the global DiC
 $env->dic->set_classes(array(
+	'Asset'                   => 'Fuel\\Core\\Asset\\Base',
 	'Cache'                   => 'Fuel\\Core\\Cache\\Base',
 	'Cache_Format'            => 'Fuel\\Core\\Cache\\Storage\\Serialize',
 	'Cache_Format.Json'       => 'Fuel\\Core\\Cache\\Storage\\Json',
@@ -34,6 +35,7 @@ $env->dic->set_classes(array(
 	'Profiler'                => 'Fuel\\Core\\Profiler',
 	'Request.Curl'            => 'Fuel\\Core\\Request\\Curl',
 	'Security_String.Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
+	'Theme'                   => 'Fuel\\Core\\Theme\\Base',
 	'Validation'              => 'Fuel\\Core\\Validation\\Base',
 	'View.Markdown'           => 'Fuel\\Core\\View\\Markdown',
 	'View.Twig'               => 'Fuel\\Core\\View\\Twig',
@@ -44,6 +46,7 @@ return $env->forge('Loader.Package')
 	->set_path(__DIR__)
 	->set_namespace(false)
 	->add_classes(array(
+		'Fuel\\Core\\Asset\\Base' => __DIR__.'/classes/Asset/Base.php',
 		'Fuel\\Core\\Cache\\Exception\\Expired' => __DIR__.'/classes/Cache/Exception/Expired.php',
 		'Fuel\\Core\\Cache\\Exception\\NotFound' => __DIR__.'/classes/Cache/Exception/NotFound.php',
 		'Fuel\\Core\\Cache\\Format\\Formatable' => __DIR__.'/classes/Cache/Format/Formatable.php',
@@ -65,6 +68,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Presenter\\Base' => __DIR__.'/classes/Presenter/Base.php',
 		'Fuel\\Core\\Request\\Curl' => __DIR__.'/classes/Request/Curl.php',
 		'Fuel\\Core\\Security\\String\\Xss' => __DIR__.'/classes/Security/String/Xss.php',
+		'Fuel\\Core\\Theme\\Base' => __DIR__.'/classes/Theme/Base.php',
 		'Fuel\\Core\\Debug' => __DIR__.'/classes/Debug.php',
 		'Fuel\\Core\\Error' => __DIR__.'/classes/Error.php',
 		'Fuel\\Core\\Profiler' => __DIR__.'/classes/Profiler.php',
