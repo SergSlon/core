@@ -10,6 +10,7 @@
 
 namespace Fuel\Core\Theme;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\Data;
 
 /**
  * Handles loading theme views and assets.
@@ -96,7 +97,7 @@ class Base
 	 *
 	 * @since  1.1
 	 */
-	public function __construct(array $config = null)
+	public function __construct($config = null)
 	{
 		$this->config = $config;
 	}
@@ -116,7 +117,8 @@ class Base
 		// Order of this addition is important, do not change this.
 		if (isset($this->config))
 		{
-			$this->config = $app->forge('Config', $this->config);
+			! $this->config instanceof Data\Config
+				and $this->config = $app->forge('Config', $this->config);
 		}
 		else
 		{
