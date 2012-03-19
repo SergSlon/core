@@ -10,6 +10,7 @@
 
 namespace Fuel\Core\Cache;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\Data;
 use Closure;
 
 /**
@@ -36,7 +37,7 @@ class Base
 	public $config;
 
 	/**
-	 * @var  \Fuel\Core\Cache\Storage\Storable  handles storing values
+	 * @var  \Fuel\Core\Cache\Storage\Base  handles storing values
 	 *
 	 * @since  2.0.0
 	 */
@@ -92,9 +93,10 @@ class Base
 	 *
 	 * @since  1.0.0
 	 */
-	public function __construct($id, $config)
+	public function __construct($id, $config = null)
 	{
 		$this->id = $id;
+		$this->config = $config;
 	}
 
 	/**
@@ -109,14 +111,20 @@ class Base
 	{
 		$this->app = $app;
 
-		// Check if already created
-		try
+		if ($this->config)
 		{
-			$this->config = clone $app->get_object('Config', 'cache');
+			! $this->config instanceof Data\Config and $this->config = $app->forge('Config', $this->config);
 		}
-		catch (\RuntimeException $e)
+		else
 		{
-			$this->config = $app->forge('Config');
+			try
+			{
+				$this->config = clone $app->get_object('Config', 'cache');
+			}
+			catch (\RuntimeException $e)
+			{
+				$this->config = $app->forge('Config');
+			}
 		}
 
 		$this->config
