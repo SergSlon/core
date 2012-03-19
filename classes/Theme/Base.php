@@ -203,7 +203,7 @@ class Base
 			throw new \RuntimeException('You must set an active theme.');
 		}
 
-		return \View::forge($this->find_file($view), $data, $auto_filter);
+		return $this->app->forge('View', $this->find_file($view), $data, $auto_filter);
 	}
 
 	/**
@@ -508,13 +508,12 @@ class Base
 			}
 
 			// find the value in the active theme info
-			if (($value = \Arr::get($this->active['info'], $var, null)) !== null)
+			if (array_get_dot_key($var, $this->active['info'], $value))
 			{
 				return $value;
 			}
-
 			// and if not found, check the fallback
-			elseif (($value = \Arr::get($this->fallback['info'], $var, null)) !== null)
+			elseif (array_get_dot_key($var, $this->fallback['info'], $value))
 			{
 				return $value;
 			}
@@ -525,8 +524,12 @@ class Base
 			// fetch the info from that theme
 			$info = $this->all_info($theme);
 
-			// and return the requested value
-			return $var === null ? $info : \Arr::get($info, $var, $default);
+			if ($var === null)
+			{
+				return $info;
+			}
+
+			return array_get_dot_key($var, $info, $return) ? $return : $default;
 		}
 
 		// not found, return the given default value
@@ -644,7 +647,7 @@ class Base
 			}
 			else
 			{
-				if ($path = \Finder::search($theme['path'], $file, $ext))
+				if ($path = $this->app->find_file($theme['path'], $file.$ext))
 				{
 					return $path;
 				}
