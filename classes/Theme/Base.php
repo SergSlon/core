@@ -8,7 +8,7 @@
  * @copyright  2010 - 2012 Fuel Development Team
  */
 
-namespace Fuel\Core;
+namespace Fuel\Core\Theme;
 use Fuel\Kernel\Application;
 
 /**
@@ -18,7 +18,7 @@ use Fuel\Kernel\Application;
  *
  * @since  1.1.0
  */
-class Theme
+class Base
 {
 	/**
 	 * @var  \Fuel\Kernel\Application\Base  app that created this request
