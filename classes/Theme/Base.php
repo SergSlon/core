@@ -192,6 +192,25 @@ class Base
 	}
 
 	/**
+	 * Fetch a Presenter's View path from the theme
+	 *
+	 * @param   string  $class
+	 * @param   string  $method
+	 * @param   array   $data
+	 * @return  \Fuel\Core\Presenter\Base
+	 *
+	 * @since  1.0.0
+	 */
+	public function presenter($class, $method = 'view', array $data = array())
+	{
+		$class = $this->app->get_class($class);
+		$presenter = new $class($method, $data);
+		$presenter->filename and $presenter->filename = $this->find_file($presenter->filename);
+		$presenter->_set_app($this->app);
+		return $presenter;
+	}
+
+	/**
 	 * Loads an asset from the currently loaded theme.
 	 *
 	 * @param   string  $path  Relative path to the asset
