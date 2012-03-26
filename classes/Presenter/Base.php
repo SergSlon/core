@@ -30,15 +30,17 @@ abstract class Base extends View\Base
 	 *
 	 * @since  2.0.0
 	 */
-	protected $_method = 'view';
+	protected $_method;
 
 	/**
 	 * Constructor
 	 *
 	 * @param  array  $data
 	 */
-	public function __construct(array $data = array())
+	public function __construct($method = 'view', array $data = array())
 	{
+		$this->_method = $method;
+
 		parent::__construct(null, $data);
 		! isset($this->_path) and $this->default_path();
 	}
