@@ -57,6 +57,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Cache\\Storage\\File' => __DIR__.'/classes/Cache/Storage/File.php',
 		'Fuel\\Core\\Cache\\Base' => __DIR__.'/classes/Cache/Base.php',
 		'Fuel\\Core\\Controller\\Template' => __DIR__.'/classes/Controller/Template.php',
+		'Fuel\\Core\\Form\\Inputable' => __DIR__.'/classes/Form/Inputable.php',
 		'Fuel\\Core\\Loader\\Closure' => __DIR__.'/classes/Loader/Closure.php',
 		'Fuel\\Core\\Loader\\Lowercase' => __DIR__.'/classes/Loader/Lowercase.php',
 		'Fuel\\Core\\Migration\\Container\\Base' => __DIR__.'/classes/Migration/Container/Base.php',
@@ -72,6 +73,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Debug' => __DIR__.'/classes/Debug.php',
 		'Fuel\\Core\\Error' => __DIR__.'/classes/Error.php',
 		'Fuel\\Core\\Profiler' => __DIR__.'/classes/Profiler.php',
+		'Fuel\\Core\\Validation\\Validatable' => __DIR__.'/classes/Validation/Validatable.php',
 	))
 	->add_class_aliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
