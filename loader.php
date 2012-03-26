@@ -15,9 +15,9 @@ require 'helpers.php';
 $env->dic->set_classes(array(
 	'Asset'                   => 'Fuel\\Core\\Asset\\Base',
 	'Cache'                   => 'Fuel\\Core\\Cache\\Base',
-	'Cache_Format'            => 'Fuel\\Core\\Cache\\Storage\\Serialize',
-	'Cache_Format.Json'       => 'Fuel\\Core\\Cache\\Storage\\Json',
-	'Cache_Format.Serialize'  => 'Fuel\\Core\\Cache\\Storage\\Serialize',
+	'Cache_Format'            => 'Fuel\\Core\\Cache\\Format\\Serialize',
+	'Cache_Format.Json'       => 'Fuel\\Core\\Cache\\Format\\Json',
+	'Cache_Format.Serialize'  => 'Fuel\\Core\\Cache\\Format\\Serialize',
 	'Cache_Format.String'     => 'Fuel\\Core\\Cache\\Storage\\String',
 	'Cache_Storage'           => 'Fuel\\Core\\Cache\\Storage\\File',
 	'Debug'                   => 'Fuel\\Core\\Debug',
@@ -32,6 +32,8 @@ $env->dic->set_classes(array(
 	'Migration'               => 'Fuel\\Core\\Migration\\Base',
 	'Migration_Container'     => 'Fuel\\Core\\Migration\\Container\\Base',
 	'Migration_Container_Storage'  => 'Fuel\\Core\\Migration\\Container\\Storage\\Base',
+	'Parser.Markdown'         => 'Fuel\\Core\\Parser\\Markdown',
+	'Parser.Twig'             => 'Fuel\\Core\\Parser\\Twig',
 	'Profiler'                => 'Fuel\\Core\\Profiler',
 	'Request.Curl'            => 'Fuel\\Core\\Request\\Curl',
 	'Security_String.Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
@@ -57,6 +59,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Cache\\Storage\\File' => __DIR__.'/classes/Cache/Storage/File.php',
 		'Fuel\\Core\\Cache\\Base' => __DIR__.'/classes/Cache/Base.php',
 		'Fuel\\Core\\Controller\\Template' => __DIR__.'/classes/Controller/Template.php',
+		'Fuel\\Core\\Form\\Inputable' => __DIR__.'/classes/Form/Inputable.php',
 		'Fuel\\Core\\Loader\\Closure' => __DIR__.'/classes/Loader/Closure.php',
 		'Fuel\\Core\\Loader\\Lowercase' => __DIR__.'/classes/Loader/Lowercase.php',
 		'Fuel\\Core\\Migration\\Container\\Base' => __DIR__.'/classes/Migration/Container/Base.php',
@@ -72,6 +75,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Debug' => __DIR__.'/classes/Debug.php',
 		'Fuel\\Core\\Error' => __DIR__.'/classes/Error.php',
 		'Fuel\\Core\\Profiler' => __DIR__.'/classes/Profiler.php',
+		'Fuel\\Core\\Validation\\Validatable' => __DIR__.'/classes/Validation/Validatable.php',
 	))
 	->add_class_aliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
