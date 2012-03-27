@@ -121,7 +121,7 @@ class Base
 				'active' => 'default',
 				'fallback' => 'default',
 				'paths' => array(),
-				'assets_folder' => 'themes',
+				'assets_folder' => 'assets',
 				'view_ext' => '.php',
 				'require_info_file' => false,
 				'info_file_name' => 'theme.info',
@@ -205,8 +205,17 @@ class Base
 	{
 		$class = $this->app->get_class($class);
 		$presenter = new $class($method, $data);
-		$presenter->filename and $presenter->filename = $this->find_file($presenter->filename);
+
+		// Some Reflection trickery to prevent the default set_filename usage
+		$prop = new \ReflectionProperty($presenter, '_path');
+		$prop->setAccessible(true);
+		$path = $prop->getValue($presenter);
+		$prop->setValue($presenter, null);
+
+		// Set the app and the Theme View path
 		$presenter->_set_app($this->app);
+		$presenter->set_filename($this->find_file($path ?: $presenter->default_path()), true);
+
 		return $presenter;
 	}
 
@@ -640,7 +649,7 @@ class Base
 			$ext   = pathinfo($view, PATHINFO_EXTENSION) ?
 				'.'.pathinfo($view, PATHINFO_EXTENSION) : $this->config['view_ext'];
 			$file  = (pathinfo($view, PATHINFO_DIRNAME) ?
-					str_replace(array('/', DS), DS, pathinfo($view, PATHINFO_DIRNAME)).DS : '').
+					str_replace('\\', '/', pathinfo($view, PATHINFO_DIRNAME)).'/' : '').
 				pathinfo($view, PATHINFO_FILENAME);
 			if (empty($theme['find_file']))
 			{
