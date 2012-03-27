@@ -99,7 +99,7 @@ class Debug
 		$backtrace = debug_backtrace();
 
 		// If being called from within, show the file above in the backtrack
-		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
+		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== false)
 		{
 			$callee = $backtrace[1];
 			$label = $backtrace[1]['function'];
@@ -264,10 +264,10 @@ JS;
 		$length = ($line_num - $start) + $padding + 1;
 		if (($start + $length) > count($this->files[$filepath]) - 1)
 		{
-			$length = NULL;
+			$length = null;
 		}
 
-		$debug_lines = array_slice($this->files[$filepath], $start, $length, TRUE);
+		$debug_lines = array_slice($this->files[$filepath], $start, $length, true);
 
 		if ($highlight)
 		{
@@ -276,7 +276,7 @@ JS;
 
 			foreach ($debug_lines as & $line)
 			{
-				$line = str_replace($to_replace, $replace_with, highlight_string('<?php ' . $line, TRUE));
+				$line = str_replace($to_replace, $replace_with, highlight_string('<?php ' . $line, true));
 			}
 		}
 
