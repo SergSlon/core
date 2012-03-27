@@ -57,7 +57,7 @@ class Error extends \Fuel\Kernel\Error
 		try
 		{
 			echo $this->app->forge('View',
-				$this->app->config->get('errors.view_error', 'error/prod'),
+				$this->app->config->get('errors.view_error', 'error/prod.php'),
 				$this->prepare_exception($e, false),
 				null,
 				false
@@ -82,11 +82,11 @@ class Error extends \Fuel\Kernel\Error
 		$data = $this->prepare_exception($e, false);
 		$data['non_fatal'] = $this->non_fatal_cache;
 
-		$view_fatal = $this->app->config->get('errors.view_fatal', 'error/500_prod');
+		$view_fatal = $this->app->config->get('errors.view_fatal', 'error/500_prod.php');
 		if ($view_fatal)
 		{
 			exit($this->app->forge('View',
-				$this->app->config->get('errors.view_fatal', 'error/500_prod'),
+				$this->app->config->get('errors.view_fatal', 'error/500_prod.php'),
 				$data,
 				null,
 				false
