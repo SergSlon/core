@@ -42,7 +42,6 @@ abstract class Base extends View\Base
 		$this->_method = $method;
 
 		parent::__construct(null, $data);
-		! isset($this->_path) and $this->default_path();
 	}
 
 	/**
@@ -62,7 +61,7 @@ abstract class Base extends View\Base
 	/**
 	 * Generates the View path based on the Presenter classname
 	 *
-	 * @return  Base
+	 * @return  string
 	 *
 	 * @since  2.0.0
 	 */
@@ -73,9 +72,8 @@ abstract class Base extends View\Base
 		{
 			$class = substr($class, $pos + 10);
 		}
-		$this->_path = str_replace('\\', '/', strtolower($class));
 
-		return $this;
+		return str_replace('\\', '/', strtolower($class));
 	}
 
 	/**
@@ -100,7 +98,7 @@ abstract class Base extends View\Base
 	public function after() {}
 
 	/**
-	 * Extend render() to execute the Presenter methods
+	 * Extend parse() to execute the Presenter methods
 	 *
 	 * @param null $method
 	 * @return string
@@ -121,6 +119,11 @@ abstract class Base extends View\Base
 			$this->{$this->_method}();
 			$this->_method = null;
 			$this->after();
+		}
+
+		if ( ! isset($this->_path) and ! isset($this->_template))
+		{
+			$this->set_filename($this->default_path());
 		}
 
 		return parent::parse();
