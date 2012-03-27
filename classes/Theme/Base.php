@@ -181,14 +181,17 @@ class Base
 	 *
 	 * @since  1.1
 	 */
-	public function view($view, $data = array(), $auto_filter = null)
+	public function view($file, $data = array(), $auto_filter = null)
 	{
 		if ($this->active['path'] === null)
 		{
 			throw new \RuntimeException('You must set an active theme.');
 		}
 
-		return $this->app->forge('View', $this->find_file($view), $data, $auto_filter);
+		$view = $this->app->forge('View', null, $data, $auto_filter);
+		$view->set_filename($this->find_file($file), true);
+
+		return $view;
 	}
 
 	/**
