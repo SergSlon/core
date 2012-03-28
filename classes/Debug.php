@@ -248,6 +248,11 @@ JS;
 	 */
 	public function file_lines($filepath, $line_num, $highlight = true, $padding = 5)
 	{
+		if (empty($filepath) or ! is_file($filepath))
+		{
+			return false;
+		}
+
 		// We cache the entire file to reduce disk IO for multiple errors
 		if ( ! isset($this->files[$filepath]))
 		{

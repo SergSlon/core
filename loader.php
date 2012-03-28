@@ -59,6 +59,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Cache\\Storage\\File' => __DIR__.'/classes/Cache/Storage/File.php',
 		'Fuel\\Core\\Cache\\Base' => __DIR__.'/classes/Cache/Base.php',
 		'Fuel\\Core\\Controller\\Template' => __DIR__.'/classes/Controller/Template.php',
+		'Fuel\\Core\\Form\\Base' => __DIR__.'/classes/Form/Base.php',
 		'Fuel\\Core\\Form\\Inputable' => __DIR__.'/classes/Form/Inputable.php',
 		'Fuel\\Core\\Loader\\Closure' => __DIR__.'/classes/Loader/Closure.php',
 		'Fuel\\Core\\Loader\\Lowercase' => __DIR__.'/classes/Loader/Lowercase.php',
