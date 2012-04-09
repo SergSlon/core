@@ -1,8 +1,23 @@
 <?php
+/**
+ * Part of the FuelPHP framework.
+ *
+ * @package    Fuel\Core
+ * @version    2.0.0
+ * @license    MIT License
+ * @copyright  2010 - 2012 Fuel Development Team
+ */
 
 namespace Fuel\Core\Job;
 
-class Job
+/**
+ * Base implementation for a Job
+ *
+ * @package  Fuel\Core
+ *
+ * @since  2.0.0
+ */
+class Base
 {
 	/**
 	 * @var  int  timestamp after which this job is executed
