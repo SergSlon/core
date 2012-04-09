@@ -651,9 +651,10 @@ class Base
 		{
 			$ext   = pathinfo($view, PATHINFO_EXTENSION) ?
 				'.'.pathinfo($view, PATHINFO_EXTENSION) : $this->config['view_ext'];
-			$file  = (pathinfo($view, PATHINFO_DIRNAME) ?
-					str_replace('\\', '/', pathinfo($view, PATHINFO_DIRNAME)).'/' : '').
-				pathinfo($view, PATHINFO_FILENAME);
+			$file  = (pathinfo($view, PATHINFO_DIRNAME)
+					? str_replace('\\', '/', pathinfo($view, PATHINFO_DIRNAME)).'/'
+					: '')
+				.pathinfo($view, PATHINFO_FILENAME);
 			if (empty($theme['find_file']))
 			{
 				if (is_file($path = $theme['path'].$file.$ext))
@@ -663,7 +664,7 @@ class Base
 			}
 			else
 			{
-				if ($path = $this->app->find_file($theme['path'], $file.$ext))
+				if ($path = $this->app->find_file('themes', $theme['path'].$file.$ext))
 				{
 					return $path;
 				}
