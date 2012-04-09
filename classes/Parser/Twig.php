@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Parser;
+use Fuel\Kernel\Application;
 use Fuel\Kernel\Parser\Parsable;
 use Exception;
 use Twig_Environment;
@@ -25,6 +26,13 @@ use Twig_Loader_String;
 class Twig implements Parsable
 {
 	/**
+	 * @var  \Fuel\Kernel\Application\Base  app that created this request
+	 *
+	 * @since  2.0.0
+	 */
+	protected $app;
+
+	/**
 	 * @var  \Twig_Environment
 	 *
 	 * @since  1.1.0
@@ -37,6 +45,19 @@ class Twig implements Parsable
 	 * @since  2.0.0
 	 */
 	protected $loader_string;
+
+	/**
+	 * Magic Fuel method that is the setter for the current app
+	 *
+	 * @param   \Fuel\Kernel\Application\Base  $app
+	 * @return  void
+	 *
+	 * @since  2.0.0
+	 */
+	public function _set_app(Application\Base $app)
+	{
+		$this->app = $app;
+	}
 
 	/**
 	 * Returns the expected file extension
@@ -59,7 +80,17 @@ class Twig implements Parsable
 	 */
 	public function parser()
 	{
-		! isset($this->parser) and $this->parser = new Twig_Environment();
+		// @todo replace this with config
+		! isset($this->parser) and $this->parser = new Twig_Environment(null, array(
+			'debug'                => false,
+			'charset'              => 'utf-8',
+			'base_template_class'  => 'Twig_Template',
+			'cache'                => $this->app->config('cache.path').'_twig/',
+			'auto_reload'          => true,
+			'strict_variables'     => false,
+			'autoescape'           => false,
+			'optimizations'        => -1,
+		));
 		return $this->parser;
 	}
 
