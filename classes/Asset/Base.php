@@ -245,7 +245,7 @@ class Base
 				if ( ! preg_match('|^(\w+:)?//|', $asset_url)
 					or strpos($asset_url, $this->app->env->base_url) === 0)
 				{
-					if ( ! ($file = $this->find_file($filename, $type)))
+					if ( ! ($file = $this->find_file($filename.'/'.$type)))
 					{
 						if ( ! $this->config['fail_silently'])
 						{

@@ -651,7 +651,7 @@ class Base
 		{
 			$ext   = pathinfo($view, PATHINFO_EXTENSION) ?
 				'.'.pathinfo($view, PATHINFO_EXTENSION) : $this->config['view_ext'];
-			$file  = (pathinfo($view, PATHINFO_DIRNAME)
+			$file  = (pathinfo($view, PATHINFO_DIRNAME) !== '.'
 					? str_replace('\\', '/', pathinfo($view, PATHINFO_DIRNAME)).'/'
 					: '')
 				.pathinfo($view, PATHINFO_FILENAME);
@@ -664,7 +664,7 @@ class Base
 			}
 			else
 			{
-				if ($path = $this->app->find_file('themes', $theme['path'].$file.$ext))
+				if (file_exists($path = 'fuel://themes/'.$theme['path'].$file.$ext))
 				{
 					return $path;
 				}
