@@ -138,7 +138,7 @@ class Twig implements Parsable
 	{
 		try
 		{
-			! $this->loader_string and $this->loader_string = new Twig_Loader_String();
+			$this->loader_string or $this->loader_string = new Twig_Loader_String();
 			$this->parser()->setLoader($this->loader_string);
 			return $this->parser()->loadTemplate($template)->render($data);
 		}
