@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Security\String;
+
 use Fuel\Kernel\Security\String;
 
 /**

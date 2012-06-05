@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Presenter;
+
 use Fuel\Kernel\Application;
 use Classes\View;
 
@@ -35,7 +36,10 @@ abstract class Base extends View\Base
 	/**
 	 * Constructor
 	 *
-	 * @param  array  $data
+	 * @param  string  $method
+	 * @param  array   $data
+	 *
+	 * @since  1.0.0
 	 */
 	public function __construct($method = 'view', array $data = array())
 	{
@@ -52,9 +56,9 @@ abstract class Base extends View\Base
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_app(Application\Base $app)
+	public function _setApp(Application\Base $app)
 	{
-		parent::_set_app($app);
+		parent::_setApp($app);
 		$this->before();
 	}
 
@@ -65,7 +69,7 @@ abstract class Base extends View\Base
 	 *
 	 * @since  2.0.0
 	 */
-	public function default_path()
+	public function defaultPath()
 	{
 		$class = get_class($this);
 		if (($pos = strpos($class, 'Presenter\\')) !== false)
@@ -123,7 +127,7 @@ abstract class Base extends View\Base
 
 		if ( ! isset($this->_path) and ! isset($this->_template))
 		{
-			$this->set_filename($this->default_path());
+			$this->setFilename($this->defaultPath());
 		}
 
 		return parent::parse();

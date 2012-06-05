@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Parser;
+
 use Fuel\Kernel\Application;
 use Fuel\Kernel\Parser\Parsable;
 use Exception;
@@ -44,7 +45,7 @@ class Twig implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	protected $loader_string;
+	protected $loaderString;
 
 	/**
 	 * Magic Fuel method that is the setter for the current app
@@ -54,7 +55,7 @@ class Twig implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_app(Application\Base $app)
+	public function _setApp(Application\Base $app)
 	{
 		$this->app = $app;
 	}
@@ -104,17 +105,17 @@ class Twig implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function parse_file($path, array $data = array())
+	public function parseFile($path, array $data = array())
 	{
 		// Extract View name/extension (ex. "template.twig")
-		$view_name = pathinfo($path, PATHINFO_BASENAME);
+		$viewName = pathinfo($path, PATHINFO_BASENAME);
 
 		// Use Twig filesystem loader
 		$this->parser()->setLoader(new Twig_Loader_Filesystem(array(pathinfo($path, PATHINFO_DIRNAME))));
 
 		try
 		{
-			return $this->parser()->loadTemplate($view_name)->render($data);
+			return $this->parser()->loadTemplate($viewName)->render($data);
 		}
 		catch (Exception $e)
 		{
@@ -134,12 +135,12 @@ class Twig implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function parse_string($template, array $data = array())
+	public function parseString($template, array $data = array())
 	{
 		try
 		{
-			$this->loader_string or $this->loader_string = new Twig_Loader_String();
-			$this->parser()->setLoader($this->loader_string);
+			$this->loaderString or $this->loaderString = new Twig_Loader_String();
+			$this->parser()->setLoader($this->loaderString);
 			return $this->parser()->loadTemplate($template)->render($data);
 		}
 		catch (Exception $e)

@@ -9,8 +9,8 @@
  */
 
 namespace Fuel\Core\Loader;
+
 use Classes\Loader\Package;
-use Closure;
 
 /**
  * Package loader with Closure that translates classname to a path.
@@ -31,16 +31,16 @@ class Closure extends Package
 	/**
 	 * Uses a closure to translate the classname to a path
 	 *
-	 * @param   string  $fullname
+	 * @param   string  $fullName
 	 * @param   string  $class
-	 * @param   string  $basepath
+	 * @param   string  $basePath
 	 * @return  string
 	 *
 	 * @since  2.0.0
 	 */
-	public function class_to_path($fullname, $class, $basepath)
+	public function classToPath($fullName, $class, $basePath)
 	{
-		return call_user_func_array($this->loader, array($fullname, $class, $basepath));
+		return call_user_func_array($this->loader, array($fullName, $class, $basePath));
 	}
 
 	/**
@@ -48,11 +48,10 @@ class Closure extends Package
 	 *
 	 * @param   \Closure  $loader
 	 * @return  Closure
-	 * @throws  \RuntimeException
 	 *
 	 * @since  2.0.0
 	 */
-	public function set_loader(Closure $loader)
+	public function setLoader(\Closure $loader)
 	{
 		$this->loader = $loader;
 		return $this;

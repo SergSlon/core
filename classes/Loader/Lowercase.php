@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Loader;
+
 use Classes\Loader\Package;
 
 /**
@@ -24,15 +25,15 @@ class Lowercase extends Package
 	/**
 	 * Makes the PSR-0 path fully lowercase
 	 *
-	 * @param   string  $fullname  full classname
+	 * @param   string  $fullName  full classname
 	 * @param   string  $class     classname relative to base/module namespace
-	 * @param   string  $basepath
+	 * @param   string  $basePath
 	 * @return  string
 	 *
 	 * @since  2.0.0
 	 */
-	public function class_to_path($fullname, $class, $basepath)
+	public function classToPath($fullName, $class, $basePath)
 	{
-		return $basepath.substr(strtolower(parent::class_to_path($fullname, $class, $basepath)), strlen($basepath));
+		return $basePath.substr(strtolower(parent::classToPath($fullName, $class, $basePath)), strlen($basePath));
 	}
 }

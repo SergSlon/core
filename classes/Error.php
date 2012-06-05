@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core;
+
 use Fuel\Kernel\Application;
 use Exception;
 
@@ -52,20 +53,20 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  2.0.0
 	 */
-	public function show_non_fatal(Exception $e)
+	public function showNonFatal(Exception $e)
 	{
 		try
 		{
 			echo $this->app->forge('View',
 				$this->app->config->get('errors.view_error', 'error/prod.php'),
-				$this->prepare_exception($e, false),
+				$this->prepareException($e, false),
 				null,
 				false
 			);
 		}
 		catch (Exception $e)
 		{
-			parent::show_non_fatal($e);
+			parent::showNonFatal($e);
 		}
 	}
 
@@ -77,16 +78,16 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  2.0.0
 	 */
-	public function show_fatal(Exception $e)
+	public function showFatal(Exception $e)
 	{
-		$data = $this->prepare_exception($e, false);
-		$data['non_fatal'] = $this->non_fatal_cache;
+		$data = $this->prepareException($e, false);
+		$data['nonFatal'] = $this->nonFatalCache;
 
-		$view_fatal = $this->app->config->get('errors.view_fatal', 'error/500_prod.php');
+		$view_fatal = $this->app->config->get('errors.viewFatal', 'error/500_prod.php');
 		if ($view_fatal)
 		{
 			exit($this->app->forge('View',
-				$this->app->config->get('errors.view_fatal', 'error/500_prod.php'),
+				$this->app->config->get('errors.viewFatal', 'error/500_prod.php'),
 				$data,
 				null,
 				false
@@ -94,7 +95,7 @@ class Error extends \Fuel\Kernel\Error
 		}
 		else
 		{
-			parent::show_fatal($e);
+			parent::showFatal($e);
 		}
 	}
 
@@ -107,7 +108,7 @@ class Error extends \Fuel\Kernel\Error
 	 *
 	 * @since  1.0.0
 	 */
-	protected function prepare_exception(Exception $e, $fatal = true)
+	protected function prepareException(Exception $e, $fatal = true)
 	{
 		// Convert exception to data array for error View
 		$data = array();
@@ -115,8 +116,8 @@ class Error extends \Fuel\Kernel\Error
 		$data['type']        = get_class($e);
 		$data['severity']    = $e->getCode();
 		$data['message']     = $e->getMessage();
-		$data['filepath']    = $e->getFile();
-		$data['error_line']  = $e->getLine();
+		$data['filePath']    = $e->getFile();
+		$data['errorLine']   = $e->getLine();
 		$data['backtrace']   = $e->getTrace();
 
 		// Translate severity int to string
@@ -137,10 +138,10 @@ class Error extends \Fuel\Kernel\Error
 			}
 		}
 
-		$data['debug_lines'] = $this->app->env->debug()->file_lines($data['filepath'], $data['error_line'], $fatal);
-		$data['orig_filepath'] = $data['filepath'];
-		$data['filepath'] = $this->app->env->clean_path($data['filepath']);
-		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
+		$data['debugLines'] = $this->app->env->debug()->fileLines($data['filePath'], $data['errorLine'], $fatal);
+		$data['origFilePath'] = $data['filePath'];
+		$data['filePath'] = $this->app->env->cleanPath($data['filePath']);
+		$data['filePath'] = str_replace("\\", "/", $data['filePath']);
 
 		return $data;
 	}

@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core\Parser;
+
 use Fuel\Kernel\Parser\Parsable;
 use dflydev\markdown\MarkdownParser;
 
@@ -53,9 +54,9 @@ class Markdown implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function parse_file($path, array $data = array())
+	public function parseFile($path, array $data = array())
 	{
-		return $this->parse_string(file_get_contents($path), $data);
+		return $this->parseString(file_get_contents($path), $data);
 	}
 
 	/**
@@ -67,7 +68,7 @@ class Markdown implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function parse_string($string, array $data = array())
+	public function parseString($string, array $data = array())
 	{
 		return $this->parser()->transform($string);
 	}

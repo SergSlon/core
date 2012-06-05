@@ -12,7 +12,7 @@
 require 'helpers.php';
 
 // Add some Core classes to the global DiC
-$env->dic->set_classes(array(
+$env->dic->setClasses(array(
 	'Asset'                   => 'Fuel\\Core\\Asset\\Base',
 	'Cache'                   => 'Fuel\\Core\\Cache\\Base',
 	'Cache_Format'            => 'Fuel\\Core\\Cache\\Format\\Serialize',
@@ -45,9 +45,9 @@ $env->dic->set_classes(array(
 
 // Forge and return the Core Package object
 return $env->forge('Loader.Package')
-	->set_path(__DIR__)
-	->set_namespace(false)
-	->add_classes(array(
+	->setPath(__DIR__)
+	->setNamespace(false)
+	->addClasses(array(
 		'Fuel\\Core\\Asset\\Base' => __DIR__.'/classes/Asset/Base.php',
 		'Fuel\\Core\\Cache\\Exception\\Expired' => __DIR__.'/classes/Cache/Exception/Expired.php',
 		'Fuel\\Core\\Cache\\Exception\\NotFound' => __DIR__.'/classes/Cache/Exception/NotFound.php',
@@ -78,7 +78,7 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Profiler' => __DIR__.'/classes/Profiler.php',
 		'Fuel\\Core\\Validation\\Validatable' => __DIR__.'/classes/Validation/Validatable.php',
 	))
-	->add_class_aliases(array(
+	->addClassAliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
 		'Classes\\Presenter\\Base'       => 'Fuel\\Core\\Presenter\\Base',
 		'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',

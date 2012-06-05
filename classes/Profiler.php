@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core;
+
 use Fuel\Kernel\Environment;
 
 /**
@@ -37,7 +38,7 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_env(Environment $env)
+	public function _setEnv(Environment $env)
 	{
 		$this->env = $env;
 	}
@@ -49,9 +50,9 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function time_elapsed()
+	public function timeElapsed()
 	{
-		return microtime(true) - $this->env->get_var('init_time');
+		return microtime(true) - $this->env->getVar('initTime');
 	}
 
 	/**
@@ -62,10 +63,10 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function mem_usage($peak = false)
+	public function memUsage($peak = false)
 	{
 		$usage = $peak ? memory_get_peak_usage() : memory_get_usage();
-		return $usage - $this->env->get_var('init_mem');
+		return $usage - $this->env->getVar('initMem');
 	}
 
 	/**
@@ -73,13 +74,16 @@ class Profiler
 	 *
 	 * @param   string|array|null  $apps
 	 * @return  array
+	 * @throws  \RuntimeException
+	 *
+	 * @since  2.0.0
 	 */
 	public function events($apps = null)
 	{
 		$apps = is_null($apps) ? array_keys($this->env->loader->apps) : (array) $apps;
 		$events = array(
 			'0.000000000000000' => array('app' => 'ENV', 'event' => 'init'),
-			strval(microtime(true) - $this->env->get_var('init_time')) => array('event' => 'NOW'),
+			strval(microtime(true) - $this->env->getVar('initTime')) => array('event' => 'NOW'),
 		);
 		foreach ($apps as $app)
 		{
@@ -88,8 +92,8 @@ class Profiler
 				throw new \RuntimeException('Application "'.$app.'" unknown in Profiler::get_event().');
 			}
 
-			$app_events = $this->env->loader->apps[$app]->notifier()->observed();
-			foreach ($app_events as $timestamp => $event)
+			$appEvents = $this->env->loader->apps[$app]->notifier()->observed();
+			foreach ($appEvents as $timestamp => $event)
 			{
 				$events[$timestamp] = array('app' => $app, 'event' => $event);
 			}

@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core;
+
 use Fuel\Kernel\Environment;
 
 /**
@@ -31,7 +32,7 @@ class Debug
 	/**
 	 * @var  bool  whether the JS has been output already
 	 */
-	protected $js_displayed = false;
+	protected $jsDisplayed = false;
 
 	/**
 	 * @var  array
@@ -46,7 +47,7 @@ class Debug
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_env(Environment $env)
+	public function _setEnv(Environment $env)
 	{
 		$this->env = $env;
 	}
@@ -58,7 +59,6 @@ class Debug
 	 */
 	public function dump()
 	{
-
 		// If being called from within, show the file above in the backtrack
 		$backtrace = debug_backtrace();
 		if (strpos($backtrace[0]['file'], 'core/classes/Debug.php') !== false)
@@ -71,7 +71,7 @@ class Debug
 		}
 
 		$arguments = func_get_args();
-		$callee['file'] = $this->env->clean_path($callee['file']);
+		$callee['file'] = $this->env->cleanPath($callee['file']);
 
 		echo '<div style="font-size: 13px;background: #EEE !important; border:1px solid #666; color: #000 !important; padding:10px;">';
 		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
@@ -111,16 +111,16 @@ class Debug
 		}
 
 		$arguments = func_get_args();
-		$total_arguments = count($arguments);
+		$totalArguments = count($arguments);
 
-		$callee['file'] = $this->env->clean_path($callee['file']);
+		$callee['file'] = $this->env->cleanPath($callee['file']);
 
-		if ( ! $this->js_displayed)
+		if ( ! $this->jsDisplayed)
 		{
 			echo <<<JS
 <script type="text/javascript">function fuel_debug_toggle(a){if(document.getElementById){if(document.getElementById(a).style.display=="none"){document.getElementById(a).style.display="block"}else{document.getElementById(a).style.display="none"}}else{if(document.layers){if(document.id.display=="none"){document.id.display="block"}else{document.id.display="none"}}else{if(document.all.id.style.display=="none"){document.all.id.style.display="block"}else{document.all.id.style.display="none"}}}};</script>
 JS;
-			$this->js_displayed = true;
+			$this->jsDisplayed = true;
 		}
 		echo '<div style="font-size: 13px;background: #EEE !important; border:1px solid #666; color: #000 !important; padding:10px;">';
 		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
@@ -128,7 +128,7 @@ JS;
 		$i = 0;
 		foreach ($arguments as $argument)
 		{
-			echo '<strong>'.$label.' #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
+			echo '<strong>'.$label.' #'.(++$i).' of '.$totalArguments.'</strong>:<br />';
 				echo $this->format('...', $argument);
 			echo '<br />';
 		}
@@ -143,12 +143,12 @@ JS;
 	 * @param   string  $name   the name of the var
 	 * @param   mixed   $var    the variable
 	 * @param   int     $level  the indentation level
-	 * @param   string  $indent_char  the indentation character
+	 * @param   string  $indentChar  the indentation character
 	 * @return  string  the formatted string.
 	 */
-	public function format($name, $var, $level = 0, $indent_char = '&nbsp;&nbsp;&nbsp;&nbsp;')
+	public function format($name, $var, $level = 0, $indentChar = '&nbsp;&nbsp;&nbsp;&nbsp;')
 	{
-		$return = str_repeat($indent_char, $level);
+		$return = str_repeat($indentChar, $level);
 		if (is_array($var))
 		{
 			$id = 'fuel_debug_'.mt_rand();
@@ -162,19 +162,19 @@ JS;
 			}
 			$return .=  " (Array, ".count($var)." elements)\n";
 
-			$sub_return = '';
+			$subReturn = '';
 			foreach ($var as $key => $val)
 			{
-				$sub_return .= $this->format($key, $val, $level + 1);
+				$subReturn .= $this->format($key, $val, $level + 1);
 			}
 
 			if (count($var) > 0)
 			{
-				$return .= "<span id=\"$id\" style=\"display: none;\">$sub_return</span>";
+				$return .= "<span id=\"$id\" style=\"display: none;\">$subReturn</span>";
 			}
 			else
 			{
-				$return .= $sub_return;
+				$return .= $subReturn;
 			}
 		}
 		elseif (is_string($var))
@@ -215,19 +215,19 @@ JS;
 			}
 			$return .= " (Object): ".get_class($var)."\n";
 
-			$sub_return = '';
+			$subReturn = '';
 			foreach ($vars as $key => $val)
 			{
-				$sub_return .= $this->format($key, $val, $level + 1);
+				$subReturn .= $this->format($key, $val, $level + 1);
 			}
 
 			if (count($vars) > 0)
 			{
-				$return .= "<span id=\"$id\" style=\"display: none;\">$sub_return</span>";
+				$return .= "<span id=\"$id\" style=\"display: none;\">$subReturn</span>";
 			}
 			else
 			{
-				$return .= $sub_return;
+				$return .= $subReturn;
 			}
 		}
 		else
@@ -240,52 +240,52 @@ JS;
 	/**
 	 * Returns the debug lines from the specified file
 	 *
-	 * @param   string  $filepath   the file path
-	 * @param   int     $line_num   the line number
+	 * @param   string  $filePath   the file path
+	 * @param   int     $lineNum   the line number
 	 * @param   bool    $highlight  whether to use syntax highlighting or not
 	 * @param   int     $padding    the amount of line padding
 	 * @return  array
 	 */
-	public function file_lines($filepath, $line_num, $highlight = true, $padding = 5)
+	public function fileLines($filePath, $lineNum, $highlight = true, $padding = 5)
 	{
-		if (empty($filepath) or ! is_file($filepath))
+		if (empty($filePath) or ! is_file($filePath))
 		{
 			return false;
 		}
 
 		// We cache the entire file to reduce disk IO for multiple errors
-		if ( ! isset($this->files[$filepath]))
+		if ( ! isset($this->files[$filePath]))
 		{
-			$this->files[$filepath] = file($filepath, FILE_IGNORE_NEW_LINES);
-			array_unshift($this->files[$filepath], '');
+			$this->files[$filePath] = file($filePath, FILE_IGNORE_NEW_LINES);
+			array_unshift($this->files[$filePath], '');
 		}
 
-		$start = $line_num - $padding;
+		$start = $lineNum - $padding;
 		if ($start < 0)
 		{
 			$start = 0;
 		}
 
-		$length = ($line_num - $start) + $padding + 1;
-		if (($start + $length) > count($this->files[$filepath]) - 1)
+		$length = ($lineNum - $start) + $padding + 1;
+		if (($start + $length) > count($this->files[$filePath]) - 1)
 		{
 			$length = null;
 		}
 
-		$debug_lines = array_slice($this->files[$filepath], $start, $length, true);
+		$debugLines = array_slice($this->files[$filePath], $start, $length, true);
 
 		if ($highlight)
 		{
-			$to_replace = array('<code>', '</code>', '<span style="color: #0000BB">&lt;?php&nbsp;', "\n");
-			$replace_with = array('', '', '<span style="color: #0000BB">', '');
+			$toReplace = array('<code>', '</code>', '<span style="color: #0000BB">&lt;?php&nbsp;', "\n");
+			$replaceWith = array('', '', '<span style="color: #0000BB">', '');
 
-			foreach ($debug_lines as & $line)
+			foreach ($debugLines as & $line)
 			{
-				$line = str_replace($to_replace, $replace_with, highlight_string('<?php ' . $line, true));
+				$line = str_replace($toReplace, $replaceWith, highlight_string('<?php ' . $line, true));
 			}
 		}
 
-		return $debug_lines;
+		return $debugLines;
 	}
 
 	/**
@@ -397,14 +397,14 @@ JS;
 		if (function_exists('getrusage'))
 		{
 			$dat = getrusage();
-			$utime_before = $dat['ru_utime.tv_sec'] + round($dat['ru_utime.tv_usec']/1000000, 4);
-			$stime_before = $dat['ru_stime.tv_sec'] + round($dat['ru_stime.tv_usec']/1000000, 4);
+			$utimeBefore = $dat['ru_utime.tv_sec'] + round($dat['ru_utime.tv_usec']/1000000, 4);
+			$stimeBefore = $dat['ru_stime.tv_sec'] + round($dat['ru_stime.tv_usec']/1000000, 4);
 		}
 		else
 		{
 			list($usec, $sec) = explode(" ", microtime());
-			$utime_before = (floatval($usec) + floatval($sec));
-			$stime_before = 0;
+			$utimeBefore = (floatval($usec) + floatval($sec));
+			$stimeBefore = 0;
 		}
 
 		// call the function to be benchmarked
@@ -414,19 +414,19 @@ JS;
 		if (function_exists('getrusage'))
 		{
 			$dat = getrusage();
-			$utime_after = $dat['ru_utime.tv_sec'] + round($dat['ru_utime.tv_usec']/1000000, 4);
-			$stime_after = $dat['ru_stime.tv_sec'] + round($dat['ru_stime.tv_usec']/1000000, 4);
+			$utimeAfter = $dat['ru_utime.tv_sec'] + round($dat['ru_utime.tv_usec']/1000000, 4);
+			$stimeAfter = $dat['ru_stime.tv_sec'] + round($dat['ru_stime.tv_usec']/1000000, 4);
 		}
 		else
 		{
 			list($usec, $sec) = explode(" ", microtime());
-			$utime_after = (floatval($usec) + floatval($sec));
-			$stime_after = 0;
+			$utimeAfter = (floatval($usec) + floatval($sec));
+			$stimeAfter = 0;
 		}
 
 		return array(
-			'user' => sprintf('%1.6f', $utime_after - $utime_before),
-			'system' => sprintf('%1.6f', $stime_after - $stime_before),
+			'user' => sprintf('%1.6f', $utimeAfter - $utimeBefore),
+			'system' => sprintf('%1.6f', $stimeAfter - $stimeBefore),
 			'result' => $result
 		);
 	}

@@ -9,6 +9,7 @@
  */
 
 namespace Fuel\Core;
+
 use ArrayAccess;
 use Countable;
 use Iterator;
@@ -121,7 +122,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function key_exists($key)
+	public function keyExists($key)
 	{
 		return array_get_dot_key($key, $this->_data, $return);
 	}
@@ -151,23 +152,23 @@ class Arr implements ArrayAccess, Iterator, Countable
 			return $return;
 		}
 
-		array_set_dot_key($key, $this->_data, $old_value, true);
+		array_set_dot_key($key, $this->_data, $oldValue, true);
 
-		return $old_value;
+		return $oldValue;
 	}
 
 	/**
 	 * Converts a multi-dimensional associative array into an array of key => values with the provided field names
 	 *
-	 * @param   string  $key_field  the field name of the key field
-	 * @param   string  $val_field  the field name of the value field
+	 * @param   string  $keyField  the field name of the key field
+	 * @param   string  $valField  the field name of the value field
 	 * @return  Arr
 	 *
 	 * @since  1.1.0
 	 */
-	public function assoc_to_keyval($key_field = null, $val_field = null)
+	public function assocToKeyval($keyField = null, $valField = null)
 	{
-		if (empty($key_field) or empty($val_field))
+		if (empty($keyField) or empty($valField))
 		{
 			return null;
 		}
@@ -175,9 +176,9 @@ class Arr implements ArrayAccess, Iterator, Countable
 		$output = array();
 		foreach ($this->_data as $row)
 		{
-			if (isset($row[$key_field]) and isset($row[$val_field]))
+			if (isset($row[$keyField]) and isset($row[$valField]))
 			{
-				$output[$row[$key_field]] = $row[$val_field];
+				$output[$row[$keyField]] = $row[$valField];
 			}
 		}
 
@@ -194,7 +195,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function to_assoc()
+	public function toAssoc()
 	{
 		if (($count = count($this->_data)) % 2 > 0)
 		{
@@ -217,7 +218,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function is_assoc()
+	public function isAssoc()
 	{
 		foreach ($this->_data as $key => $unused)
 		{
@@ -242,8 +243,8 @@ class Arr implements ArrayAccess, Iterator, Countable
 	public function flatten($glue = '.', $indexed = true)
 	{
 		$return = array();
-		$curr_key = array();
-		$flatten = function (&$array, &$curr_key, &$return, $glue, $indexed, $self)
+		$currKey = array();
+		$flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self)
 		{
 			foreach ($array as $key => &$val)
 			{
@@ -251,16 +252,16 @@ class Arr implements ArrayAccess, Iterator, Countable
 				if ((is_array($val) or $val instanceof \Iterator)
 					and ($indexed or array_values($val) !== $val))
 				{
-					$self($val, $curr_key, $return, $glue, false);
+					$self($val, $currKey, $return, $glue, false);
 				}
 				else
 				{
-					$return[implode($glue, $curr_key)] = $val;
+					$return[implode($glue, $currKey)] = $val;
 				}
-				array_pop($curr_key);
+				array_pop($currKey);
 			}
 		};
-		return $flatten($this->_data, $curr_key, $return, $glue, $indexed, $flatten);
+		return $flatten($this->_data, $currKey, $return, $glue, $indexed, $flatten);
 	}
 
 	/**
@@ -273,7 +274,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function flatten_assoc($glue = '.', $reset = true)
+	public function flattenAssoc($glue = '.', $reset = true)
 	{
 		return $this->flatten($glue, $reset, false);
 	}
@@ -281,20 +282,20 @@ class Arr implements ArrayAccess, Iterator, Countable
 	/**
 	 * Filters an array on prefixed associative keys.
 	 *
-	 * @param   string  $prefix         prefix to filter on
-	 * @param   bool    $remove_prefix  whether to remove the prefix
+	 * @param   string  $prefix        prefix to filter on
+	 * @param   bool    $removePrefix  whether to remove the prefix
 	 * @return  array
 	 *
 	 * @since  1.1.0
 	 */
-	public function filter_prefixed($prefix = 'prefix_', $remove_prefix = true)
+	public function filterPrefixed($prefix = 'prefix_', $removePrefix = true)
 	{
 		$return = array();
 		foreach ($this->_data as $key => &$val)
 		{
 			if (preg_match('/^'.$prefix.'/', $key))
 			{
-				if ($remove_prefix === true)
+				if ($removePrefix === true)
 				{
 					$key = preg_replace('/^'.$prefix.'/','',$key);
 				}
@@ -314,7 +315,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function filter_keys($keys, $remove = false)
+	public function filterKeys($keys, $remove = false)
 	{
 		$return = array();
 		foreach ($keys as $key)
@@ -338,6 +339,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 * @param   array|mixed  $value  the value(s) to insert, arrays needs to be inside an array themselves
 	 * @param   int          $pos    the numeric position at which to insert, negative to count from the end backwards
 	 * @return  Arr
+	 * @throws  \OutOfBoundsException
 	 *
 	 * @since  1.1.0
 	 */
@@ -362,7 +364,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function insert_before_key($value, $key)
+	public function insertBeforeKey($value, $key)
 	{
 		$pos = array_search($key, array_keys($this->_data));
 		if ($pos === false)
@@ -383,7 +385,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function insert_after_key($value, $key)
+	public function insertAfterKey($value, $key)
 	{
 		$pos = array_search($key, array_keys($this->_data));
 		if ($pos === false)
@@ -404,7 +406,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 *
 	 * @since  1.1.0
 	 */
-	public function insert_after_value($value, $search)
+	public function insertAfterValue($value, $search)
 	{
 		$key = array_search($search, $this->_data);
 		if ($key === false)
@@ -412,21 +414,22 @@ class Arr implements ArrayAccess, Iterator, Countable
 			throw new \OutOfBoundsException('Unknown value after which to insert the new value into the array.');
 		}
 
-		return $this->insert_after_key($value, $key);
+		return $this->insertAfterKey($value, $key);
 	}
 
 	/**
 	 * Replaces key names in an array by names in $replace
 	 *
 	 * @param   array|string  $replace  key to replace or array containing the replacement keys
-	 * @param   string        $new_key  the replacement key
+	 * @param   string        $newKey   the replacement key
 	 * @return  Arr
+	 * @throws  \InvalidArgumentException
 	 *
 	 * @since  1.1.0
 	 */
-	public function replace_key($replace, $new_key = null)
+	public function replace_key($replace, $newKey = null)
 	{
-		is_string($replace) and $replace = array($replace => $new_key);
+		is_string($replace) and $replace = array($replace => $newKey);
 		if ( ! is_array($replace))
 		{
 			throw new \InvalidArgumentException('First parameter must be an array or string.');
@@ -463,25 +466,25 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 */
 	public function merge($array)
 	{
-		$merge = function(&$array_1, $array_2, $merge)
+		$merge = function(&$array1, $array2, $merge)
 		{
-			foreach ($array_2 as $k => &$v)
+			foreach ($array2 as $k => &$v)
 			{
 				// numeric keys are appended
 				if (is_int($k))
 				{
-					array_key_exists($k, $array_1) ? array_push($array_1, $v) : $array_1[$k] = $v;
+					array_key_exists($k, $array1) ? array_push($array1, $v) : $array1[$k] = $v;
 				}
-				elseif (is_array($v) and array_key_exists($k, $array_1) and is_array($array_1[$k]))
+				elseif (is_array($v) and array_key_exists($k, $array1) and is_array($array1[$k]))
 				{
-					$array_1[$k] = $merge($array_1[$k], $v);
+					$array1[$k] = $merge($array1[$k], $v);
 				}
 				else
 				{
-					$array_1[$k] = $v;
+					$array1[$k] = $v;
 				}
 			}
-			return $array_1;
+			return $array1;
 		};
 
 		$arrays = func_get_args();
@@ -536,7 +539,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	 */
 	public function offsetExists($offset)
 	{
-		return $this->key_exists($offset);
+		return $this->keyExists($offset);
 	}
 
 	/**
@@ -594,7 +597,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 	/**
 	 * Implements Iterator Interface
 	 *
-	 * @return  string|int
+	 * @return  mixed
 	 *
 	 * @since  2.0.0
 	 */

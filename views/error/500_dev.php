@@ -36,11 +36,11 @@
 
 		<p class="intro"><?php echo $type; ?> [ <?php echo $severity; ?> ]: <?php echo $message; ?></p>
 
-		<h2 class="first"><?php echo $filepath; ?> @ line <?php echo $error_line; ?></h2>
+		<h2 class="first"><?php echo $filePath; ?> @ line <?php echo $error_line; ?></h2>
 
-<?php if (is_array($debug_lines)): ?>
-<pre class="fuel_debug_source"><?php foreach ($debug_lines as $line_num => $line_content): ?>
-<span<?php echo ($line_num == $error_line) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($line_num, (strlen(count($debug_lines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $line_content . PHP_EOL; ?>
+<?php if (is_array($debugLines)): ?>
+<pre class="fuel_debug_source"><?php foreach ($debugLines as $lineNum => $lineContent): ?>
+<span<?php echo ($lineNum == $errorLine) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($lineNum, (strlen(count($debugLines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $lineContent . PHP_EOL; ?>
 </span></span><?php endforeach; ?></pre>
 <?php endif; ?>
 	<?php if ($backtrace): ?>
@@ -50,10 +50,10 @@
 			$id = 0;
 			foreach ($backtrace as $trace):
 				$id++;
-				$debug_lines = $env->debug()->file_lines($trace['file'], $trace['line']);
+				$debugLines = $env->debug()->fileLines($trace['file'], $trace['line']);
 		?>
 			<li>
-				<a href="#" onclick="javascript:fuel_toggle('backtrace_<?php echo $id; ?>');return false;"><?php echo $env->clean_path($trace['file']).' @ line '.$trace['line']; ?></a>
+				<a href="#" onclick="javascript:fuel_toggle('backtrace_<?php echo $id; ?>');return false;"><?php echo $env->cleanPath($trace['file']).' @ line '.$trace['line']; ?></a>
 				<div id="backtrace_<?php echo $id; ?>" class="backtrace_block">
 <pre class="fuel_debug_source"><?php foreach ($debug_lines as $line_num => $line_content): ?>
 <span<?php echo ($line_num == $trace['line']) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($line_num, (strlen(count($debug_lines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $line_content . PHP_EOL; ?>
@@ -64,20 +64,20 @@
 		</ol>
 	<?php endif; ?>
 
-<?php if (count($non_fatal) > 0): ?>
+<?php if (count($nonFatal) > 0): ?>
 		<h2>Prior Non-Fatal Errors</h2>
 		<ol>
 		<?php
 		$id = 0;
-		foreach ($non_fatal as $e):
+		foreach ($nonFatal as $e):
 			$id++;
-			$debug_lines = $env->debug()->file_lines($e->getFile(), $e->getLine());
+			$debugLines = $env->debug()->fileLines($e->getFile(), $e->getLine());
 		?>
 			<li>
-				<a href="#" onclick="javascript:fuel_toggle('non_fatal_<?php echo $id; ?>');return false;"><?php echo $e->getCode(); ?>: <?php echo $e->getMessage(); ?> in <?php echo $env->clean_path($e->getFile()); ?> @ line <?php echo $e->getLine(); ?></a>
+				<a href="#" onclick="javascript:fuel_toggle('non_fatal_<?php echo $id; ?>');return false;"><?php echo $e->getCode(); ?>: <?php echo $e->getMessage(); ?> in <?php echo $env->cleanPath($e->getFile()); ?> @ line <?php echo $e->getLine(); ?></a>
 				<div id="non_fatal_<?php echo $id; ?>" class="backtrace_block">
-<pre class="fuel_debug_source"><?php foreach ($debug_lines as $line_num => $line_content): ?>
-<span<?php echo ($line_num == $error_line) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($line_num, (strlen(count($debug_lines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $line_content . PHP_EOL; ?>
+<pre class="fuel_debug_source"><?php foreach ($debugLines as $lineNum => $lineContent): ?>
+<span<?php echo ($lineNum == $errorLine) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($lineNum, (strlen(count($debugLines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $lineContent . PHP_EOL; ?>
 </span></span><?php endforeach; ?></pre>
 				</div>
 			</li>
