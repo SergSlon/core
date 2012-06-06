@@ -60,7 +60,7 @@ class Error extends \Fuel\Kernel\Error
 			echo $this->app->forge('View',
 				$this->app->config->get('errors.viewError', 'error/prod.php'),
 				$this->prepareException($e, false),
-				null,
+				'Php',
 				false
 			);
 		}
@@ -89,7 +89,7 @@ class Error extends \Fuel\Kernel\Error
 			exit($this->app->forge('View',
 				$this->app->config->get('errors.viewFatal', 'error/500_prod.php'),
 				$data,
-				null,
+				'Php',
 				false
 			));
 		}
