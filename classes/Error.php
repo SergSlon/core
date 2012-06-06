@@ -58,7 +58,7 @@ class Error extends \Fuel\Kernel\Error
 		try
 		{
 			echo $this->app->forge('View',
-				$this->app->config->get('errors.view_error', 'error/prod.php'),
+				$this->app->config->get('errors.viewError', 'error/prod.php'),
 				$this->prepareException($e, false),
 				null,
 				false

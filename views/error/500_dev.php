@@ -36,7 +36,7 @@
 
 		<p class="intro"><?php echo $type; ?> [ <?php echo $severity; ?> ]: <?php echo $message; ?></p>
 
-		<h2 class="first"><?php echo $filePath; ?> @ line <?php echo $error_line; ?></h2>
+		<h2 class="first"><?php echo $filePath; ?> @ line <?php echo $errorLine; ?></h2>
 
 <?php if (is_array($debugLines)): ?>
 <pre class="fuel_debug_source"><?php foreach ($debugLines as $lineNum => $lineContent): ?>
