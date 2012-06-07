@@ -69,7 +69,6 @@ return $env->forge('Loader.Package')
 		'Fuel\\Core\\Migration\\Migratable' => __DIR__.'/classes/Migration/Migratable.php',
 		'Fuel\\Core\\Parser\\Markdown' => __DIR__.'/classes/Parser/Markdown.php',
 		'Fuel\\Core\\Parser\\Twig' => __DIR__.'/classes/Parser/Twig.php',
-		'Fuel\\Core\\Presenter\\Base' => __DIR__.'/classes/Presenter/Base.php',
 		'Fuel\\Core\\Request\\Curl' => __DIR__.'/classes/Request/Curl.php',
 		'Fuel\\Core\\Security\\String\\Xss' => __DIR__.'/classes/Security/String/Xss.php',
 		'Fuel\\Core\\Theme\\Base' => __DIR__.'/classes/Theme/Base.php',
@@ -80,6 +79,5 @@ return $env->forge('Loader.Package')
 	))
 	->addClassAliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
-		'Classes\\Presenter\\Base'       => 'Fuel\\Core\\Presenter\\Base',
 		'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',
 	));
