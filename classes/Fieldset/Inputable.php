@@ -8,7 +8,7 @@
  * @copyright  2010 - 2012 Fuel Development Team
  */
 
-namespace Fuel\Core\Form;
+namespace Fuel\Core\Fieldset;
 
 /**
  * Classes extending this can be given to the Form::add() method
