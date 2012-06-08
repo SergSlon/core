@@ -34,11 +34,6 @@ class Base
 	public $config;
 
 	/**
-	 * @var  array  methods and variables to call for delayed generation
-	 */
-	protected $contents = array();
-
-	/**
 	 * Constructor
 	 *
 	 * @param  array|\Fuel\Kernel\Data\Config  $config
@@ -58,7 +53,7 @@ class Base
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_app(Application\Base $app)
+	public function _setApp(Application\Base $app)
 	{
 		$this->app = $app;
 		$this->config = $app->forge('Object_Config', 'form', $this->config);
@@ -66,46 +61,25 @@ class Base
 		$this->config
 			// Set defaults
 			->add(array(
-				'direct_output' => false,
-				'security_clean' => true,
-				'parser' => 'Parser.Form',
-				'auto_id' => true,
-				'auto_id_prefix' => 'form_',
-				'button_as_input' => false,
-				'valid_input_types' => array(
+				'formMethod' => 'POST',
+				'securityClean' => true,
+				'autoId' => true,
+				'autoIdPrefix' => 'form_',
+				'buttonAsInput' => false,
+				'validInputTypes' => array(
 					'button', 'checkbox', 'color', 'date', 'datetime',
 					'datetime-local', 'email', 'file', 'hidden', 'image',
 					'month', 'number', 'password', 'radio', 'range',
 					'reset', 'search', 'submit', 'tel', 'text', 'time',
 					'url', 'week'
 				),
-
-				// General templates
-				'tpl_form' => null,
-				'tpl_fieldset' => null,
-				'tpl_hidden' => null,
-				'tpl_label' => null,
-				'tpl_raw_html' => null,
-
-				// Specific type templates
-				'tpl_button' => null,
-				'tpl_checkbox' => null,
-				'tpl_password' => null,
-				'tpl_radio' => null,
-				'tpl_select' => null,
-				'tpl_text' => null,
-				'tpl_textarea' => null,
-
-				// Subtemplates for select
-				'tpl_option' => null,
-				'tpl_optgroup' => null,
 			))
 			// Add validators
 			->validators(array(
-				'direct_output' => 'is_bool',
-				'auto_id' => 'is_bool',
-				'security_clean' => 'is_bool',
-				'valid_input_types' => 'is_array',
+				'directOutput' => 'is_bool',
+				'autoId' => 'is_bool',
+				'securityClean' => 'is_bool',
+				'validInputTypes' => 'is_array',
 			));
 	}
 
@@ -117,19 +91,19 @@ class Base
 	 *
 	 * @since  1.0.0
 	 */
-	public function form(array $attributes = array())
+	public function formOpen(array $attributes = array())
 	{
 		$attributes = ! is_array($attributes) ? array('action' => $attributes) : $attributes;
 
 		// If there is still no action set, Form-post
 		if( ! array_key_exists('action', $attributes) or $attributes['action'] === null)
 		{
-			$attributes['action'] = $this->app->get_object('Uri')->main();
+			$attributes['action'] = $this->app->getObject('Uri')->main();
 		}
 		// If not a full URL, create one
 		elseif ( ! strpos($attributes['action'], '://'))
 		{
-			$attributes['action'] = $this->app->get_object('Uri')->create($attributes['action']);
+			$attributes['action'] = $this->app->getObject('Uri')->create($attributes['action']);
 		}
 
 		// Default charset to the one set in the environment
@@ -141,7 +115,7 @@ class Base
 		// If method is empty, use POST
 		if ( ! isset($attributes['method']))
 		{
-			$attributes['method'] = $this->config['form_method'] ?: 'post';
+			$attributes['method'] = $this->config['formMethod'] ?: 'POST';
 		}
 
 		return '<form '.array_to_attr($attributes).'>';
@@ -154,7 +128,7 @@ class Base
 	 *
 	 * @since  1.0.0
 	 */
-	public function form_close()
+	public function formClose()
 	{
 		return '</form>';
 	}
@@ -164,43 +138,39 @@ class Base
 	 *
 	 * @param   array   array with tag attribute settings
 	 * @param   string  string for the fieldset legend
-	 * @return  string|Base
+	 * @return  string
 	 *
 	 * @since  1.1.0
 	 */
-	public function fieldset($attributes = array(), $legend = null)
+	public function fieldsetOpen($attributes = array())
 	{
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('fieldset', $attributes, $legend);
-			return $this;
-		}
-
-		$fieldset_open = '<fieldset ' . array_to_attr($attributes) . '>';
-
-		! is_null($legend) and $attributes['legend'] = $legend;
-		if ( ! empty($attributes['legend']))
-		{
-			$fieldset_open.= PHP_EOL."<legend>".$attributes['legend']."</legend>";
-		}
-
-		return $fieldset_open;
+		return '<fieldset ' . array_to_attr($attributes) . '>';
 	}
 
 	/**
 	 * Create a fieldset close tag
 	 *
-	 * @return string|Base
+	 * @return string
+	 *
+	 * @since  1.1.0
 	 */
-	public function fieldset_close()
+	public function fieldsetClose()
 	{
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('fieldset_close');
-			return $this;
-		}
-
 		return '</fieldset>';
+	}
+
+	/**
+	 * Create a legend
+	 *
+	 * @param   string  $legend
+	 * @param   array   $attributes
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function legend($legend, array $attributes = array())
+	{
+		return html_tag('legend', $attributes, $legend);
 	}
 
 	public function label($label, $for = null, array $attributes = array()) {}
@@ -209,13 +179,14 @@ class Base
 	 * Create a form input
 	 *
 	 * @param   string|array  $name  either fieldname or attributes array
-	 * @param   string        $value
+	 * @param   string|null   $value
 	 * @param   array         $attributes
 	 * @return  array
+	 * @throws  \InvalidArgumentException
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
-	protected function input($name, $value = null, array $attributes = array())
+	public function input($name, $value = null, array $attributes = array())
 	{
 		if (is_array($name))
 		{
@@ -228,33 +199,27 @@ class Base
 			$attributes['value'] = (string) $value;
 		}
 
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('input', $attributes);
-			return $this;
-		}
-
 		// Default to 'text' when no type was set
 		$attributes['type'] = empty($attributes['type']) ? 'text' : $attributes['type'];
 
 		// Check type validity
-		if ( ! in_array($attributes['type'], $this->config['valid_input_types']))
+		if ( ! in_array($attributes['type'], $this->config['validInputTypes']))
 		{
 			throw new \InvalidArgumentException('"'.$attributes['type'].'" is not a valid input type.');
 		}
 
 		// Prepare the value for form output
-		if ($this->config['security_clean']
+		if ($this->config['securityClean']
 			or (isset($attributes['clean']) and $attributes['clean']))
 		{
-			$attributes['value'] = $this->security_clean($attributes['value']);
-			unset($attributes['dont_clean']);
+			$attributes['value'] = $this->securityClean($attributes['value']);
 		}
+		unset($attributes['clean']);
 
 		// Auto assign an ID when none set
-		if (empty($attributes['id']) and $this->config['auto_id'] === true)
+		if (empty($attributes['id']) and $this->config['autoId'] === true)
 		{
-			$attributes['id'] = $this->config['auto_id_prefix'].$attributes['name'];
+			$attributes['id'] = $this->config['autoIdPrefix'].$attributes['name'];
 		}
 
 		// Allow overwrite of default tag used
@@ -273,65 +238,7 @@ class Base
 			}
 		}
 
-		return array(
-			'tag' => $tag,
-			'attributes' => $attributes,
-			'content' => $content,
-		);
-	}
-
-	/**
-	 * Templates method output
-	 *
-	 * @param   string  $tpl
-	 * @param   array   $vars
-	 * @return  string
-	 */
-	protected function _template($tpl, array $vars)
-	{
-		if ($tpl = $this->config['tpl_'.$tpl])
-		{
-			if ($tpl instanceof View\Viewable)
-			{
-				foreach ($vars as $k => $v)
-				{
-					$tpl->{$k} = $v;
-				}
-				return $tpl;
-			}
-
-			$parser = $this->app->get_object($this->config['parser']);
-			return $parser->parse_string($tpl, $vars);
-		}
-
-		return html_tag($vars['tag'], $vars['attributes'], $vars['content']);
-	}
-
-	/**
-	 * Accept outside input to create fields
-	 *
-	 * @param   Inputable  $input
-	 * @return  Base
-	 *
-	 * @since  2.0.0
-	 */
-	public function add(Inputable $input)
-	{
-		$inputs = $input->_form();
-
-		foreach ($inputs as $i)
-		{
-			if ($i['type'] === 'select')
-			{
-				$this->select($i);
-			}
-			elseif ( ! empty($i['type']))
-			{
-				$this->input($i);
-			}
-		}
-
-		return $this;
+		return html_tag($tag, $attributes, $content);
 	}
 
 	/**
@@ -340,16 +247,14 @@ class Base
 	 * @param   string|array  $name
 	 * @param   string        $value
 	 * @param   array         $attributes
-	 * @return  Base|string
+	 * @return  string
 	 *
 	 * @since  1.0.0
 	 */
 	public function hidden($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'hidden';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('hidden', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -358,16 +263,14 @@ class Base
 	 * @param   string|array  $name
 	 * @param   string        $value
 	 * @param   array         $attributes
-	 * @return  Base|string
+	 * @return  string
 	 *
 	 * @since  1.0.0
 	 */
 	public function text($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'text';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('text', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -383,9 +286,7 @@ class Base
 	public function password($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'password';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('password', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -401,9 +302,7 @@ class Base
 	public function textarea($name, $value = '', array $attributes = array())
 	{
 		$attributes['type'] = 'textarea';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('textarea', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -419,9 +318,7 @@ class Base
 	public function button($name, $value = '', array $attributes = array())
 	{
 		$this->config['button_as_input'] ? $attributes['type'] = 'button' : $attributes['tag'] = 'button';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('button', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -444,9 +341,7 @@ class Base
 		}
 
 		$attributes['type'] = 'radio';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('radio', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
@@ -469,14 +364,11 @@ class Base
 		}
 
 		$attributes['type'] = 'checkbox';
-		$input = $this->input($name, $value, $attributes);
-
-		return $input === $this ? $this : $this->_template('checkbox', $input);
+		return $this->input($name, $value, $attributes);
 	}
 
 	/**
 	 * Create a select input
-	 * @todo properly refactor this to work with input() method for preprocessing
 	 *
 	 * @param   string|array  $name
 	 * @param   string        $value
@@ -514,20 +406,35 @@ class Base
 		}, array_values((array) $attributes['selected']));
 		unset($attributes['selected']);
 
+		$optgroupAttributes = isset($attributes['optgroupAttributes']) ? $attributes['optgroupAttributes'] : array();
+		$optionAttributes   = isset($attributes['optionAttributes']) ? $attributes['optionAttributes'] : array();
+
+		! isset($optgroupAttributes['optionAttributes'])
+			and $optgroupAttributes['optionAttributes'] = $optionAttributes;
+
 		$input = PHP_EOL;
 		foreach ($options as $key => $val)
 		{
 			if (is_array($val))
 			{
-				$input .= $this->optgroup($val, $key, $selected, $attributes);
+				$input .= $this->optgroup($val, $key, $selected, $optgroupAttributes).PHP_EOL;
 			}
 			else
 			{
-				$input .= $this->option($val, $key, in_array((string) $key, $selected, true), $attributes);
+				$input .= $this->option(
+					$val,
+					$key,
+					in_array((string) $key, $selected, true),
+					$optionAttributes
+				).PHP_EOL;
 			}
 		}
 
-		return html_tag($tag, $attributes, $input);
+		// Allow overwrite of default tag used
+		$tag = ! empty($attributes['tag']) ? $attributes['tag'] : 'select';
+		unset($attributes['tag']);
+
+		return html_tag('tag', $attributes, $input);
 	}
 
 	/**
@@ -543,20 +450,21 @@ class Base
 	 */
 	public function option($value, $label, $selected, array $attributes)
 	{
-		if ($this->config['prep_value'] and empty($attributes['dont_prep']))
+		if ($this->config['securityClean']
+			or (isset($attributes['clean']) and $attributes['clean']))
 		{
-			$value = $this->security_clean($value);
-			$label = $this->security_clean($label);
+			$attributes['value'] = $this->securityClean($attributes['value']);
 		}
+		unset($attributes['clean']);
 
-		$attrs = array('value' => $value, 'selected' => $selected);
-		isset($attributes['option_attributes']) and $attrs += $attributes['option_attributes'];
+		$attributes['value'] = $value;
+		$attributes['selected'] = $selected;
 
 		// Allow overwrite of default tag used
-		$tag = ! empty($attrs['tag']) ? $attrs['tag'] : 'option';
-		unset($attrs['tag']);
+		$tag = ! empty($attributes['tag']) ? $attributes['tag'] : 'option';
+		unset($attributes['tag']);
 
-		return html_tag($tag, $attrs, $label).PHP_EOL;
+		return html_tag($tag, $attributes, $label);
 	}
 
 	/**
@@ -581,68 +489,20 @@ class Base
 			}
 			else
 			{
-				$input .= $this->option($label, $option, in_array((string) $option, $selected, true), $attributes);
+				$input .= $this->option(
+					$label,
+					$option,
+					in_array((string) $option, $selected, true),
+					$attributes['optionAttributes']
+				);
 			}
 		}
 
-		$attrs = array();
-		isset($attributes['optgroup_attributes']) and $attrs += $attributes['optgroup_attributes'];
-
 		// Allow overwrite of default tag used
-		$tag = ! empty($attrs['tag']) ? $attrs['tag'] : 'optgroup';
-		unset($attrs['tag']);
+		$tag = ! empty($attributes['tag']) ? $attributes['tag'] : 'optgroup';
+		unset($attributes['tag']);
 
-		return html_tag($tag, $attrs, $label).PHP_EOL;
-	}
-
-	/**
-	 * Just unedited HTML
-	 *
-	 * @param   string  $html
-	 * @return  Base
-	 *
-	 * @since  2.0.0
-	 */
-	public function raw_html($html)
-	{
-		if ( ! $this->config['direct_output'])
-		{
-			$this->contents[] = array('raw_html', $html);
-			return $this;
-		}
-
-		return $html;
-	}
-
-	/**
-	 * Set a template
-	 *
-	 * @param   string  $type
-	 * @param   string|\Fuel\Kernel\View\Viewable  $template
-	 * @return  Base
-	 *
-	 * @since  2.0.0
-	 */
-	public function set_template($type, $template)
-	{
-		$type = 'tpl_'.$type;
-		! $template instanceof View\Viewable and $template = strval($template);
-		$this->config[$type] = $template;
-
-		return $this;
-	}
-
-	/**
-	 * Fetch a template when set, null for no template set
-	 *
-	 * @param   string  $type
-	 * @return  null|string|\Fuel\Kernel\View\Viewable
-	 *
-	 * @since  2.0.0
-	 */
-	public function get_template($type)
-	{
-		return $this->config[$type];
+		return html_tag($tag, $attributes, $label);
 	}
 
 	/**
@@ -653,53 +513,8 @@ class Base
 	 *
 	 * @since  1.0.0
 	 */
-	public function security_clean($value)
+	public function securityClean($value)
 	{
 		return $this->app->security->clean($value);
-	}
-
-	/**
-	 * Renders the contents array into HTML output
-	 *
-	 * @return  string
-	 *
-	 * @since  2.0.0
-	 */
-	public function render()
-	{
-		$output = '';
-
-		$this->config['direct_output'] = true;
-
-		$pre_render = $this->config['field_pre_render'];
-		$post_render = $this->config['field_post_render'];
-
-		foreach ($this->contents as $c)
-		{
-			$method = array_shift($c);
-			$pre_render and list($method, $c) = $pre_render($method, $c);
-
-			$field = call_user_func_array(array($this, $method), $c);
-
-			$post_render and $field = $post_render($field);
-
-			$output .= $field;
-		}
-
-		$this->config['direct_output'] = false;
-
-		return $output;
-	}
-
-	/**
-	 * PHP magic method to turn this object into a string
-	 *
-	 * @return  string
-	 *
-	 * @since  1.0.0
-	 */
-	public function __toString()
-	{
-		return $this->render();
 	}
 }
