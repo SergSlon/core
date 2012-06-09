@@ -47,36 +47,6 @@ $env->dic->setClasses(array(
 return $env->forge('Loader.Package')
 	->setPath(__DIR__)
 	->setNamespace(false)
-	->addClasses(array(
-		'Fuel\\Core\\Asset\\Base' => __DIR__.'/classes/Fuel/Core/Asset/Base.php',
-		'Fuel\\Core\\Cache\\Exception\\Expired' => __DIR__.'/classes/Fuel/Core/Cache/Exception/Expired.php',
-		'Fuel\\Core\\Cache\\Exception\\NotFound' => __DIR__.'/classes/Fuel/Core/Cache/Exception/NotFound.php',
-		'Fuel\\Core\\Cache\\Format\\Formatable' => __DIR__.'/classes/Fuel/Core/Cache/Format/Formatable.php',
-		'Fuel\\Core\\Cache\\Format\\Json' => __DIR__.'/classes/Fuel/Core/Cache/Format/Json.php',
-		'Fuel\\Core\\Cache\\Format\\Serialize' => __DIR__.'/classes/Fuel/Core/Cache/Format/Serialize.php',
-		'Fuel\\Core\\Cache\\Format\\String' => __DIR__.'/classes/Fuel/Core/Cache/Format/String.php',
-		'Fuel\\Core\\Cache\\Storage\\Base' => __DIR__.'/classes/Fuel/Core/Cache/Storage/Base.php',
-		'Fuel\\Core\\Cache\\Storage\\File' => __DIR__.'/classes/Fuel/Core/Cache/Storage/File.php',
-		'Fuel\\Core\\Cache\\Base' => __DIR__.'/classes/Fuel/Core/Cache/Base.php',
-		'Fuel\\Core\\Controller\\Template' => __DIR__.'/classes/Fuel/Core/Controller/Template.php',
-		'Fuel\\Core\\Fieldset\\Inputable' => __DIR__.'/classes/Fuel/Core/Fieldset/Inputable.php',
-		'Fuel\\Core\\Form\\Base' => __DIR__.'/classes/Fuel/Core/Form/Base.php',
-		'Fuel\\Core\\Loader\\Closure' => __DIR__.'/classes/Fuel/Core/Loader/Closure.php',
-		'Fuel\\Core\\Loader\\Lowercase' => __DIR__.'/classes/Fuel/Core/Loader/Lowercase.php',
-		'Fuel\\Core\\Migration\\Container\\Base' => __DIR__.'/classes/Fuel/Core/Migration/Container/Base.php',
-		'Fuel\\Core\\Migration\\Base' => __DIR__.'/classes/Fuel/Core/Migration/Base.php',
-		'Fuel\\Core\\Migration\\Exception' => __DIR__.'/classes/Fuel/Core/Migration/Exception.php',
-		'Fuel\\Core\\Migration\\Migratable' => __DIR__.'/classes/Fuel/Core/Migration/Migratable.php',
-		'Fuel\\Core\\Parser\\Markdown' => __DIR__.'/classes/Fuel/Core/Parser/Markdown.php',
-		'Fuel\\Core\\Parser\\Twig' => __DIR__.'/classes/Fuel/Core/Parser/Twig.php',
-		'Fuel\\Core\\Request\\Curl' => __DIR__.'/classes/Fuel/Core/Request/Curl.php',
-		'Fuel\\Core\\Security\\String\\Xss' => __DIR__.'/classes/Fuel/Core/Security/String/Xss.php',
-		'Fuel\\Core\\Theme\\Base' => __DIR__.'/classes/Fuel/Core/Theme/Base.php',
-		'Fuel\\Core\\Debug' => __DIR__.'/classes/Fuel/Core/Debug.php',
-		'Fuel\\Core\\Error' => __DIR__.'/classes/Fuel/Core/Error.php',
-		'Fuel\\Core\\Profiler' => __DIR__.'/classes/Fuel/Core/Profiler.php',
-		'Fuel\\Core\\Validation\\Validatable' => __DIR__.'/classes/Fuel/Core/Validation/Validatable.php',
-	))
 	->addClassAliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
 		'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',
