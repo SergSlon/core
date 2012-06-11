@@ -108,10 +108,11 @@ class Twig implements Parsable
 	public function parseFile($path, array $data = array())
 	{
 		// Extract View name/extension (ex. "template.twig")
-		$viewName = pathinfo($path, PATHINFO_BASENAME);
+		$dirName   = $this->app->config('parser.dir', dirname($path));
+		$viewName  = substr($path, strlen($dirName));
 
 		// Use Twig filesystem loader
-		$this->parser()->setLoader(new Twig_Loader_Filesystem(array(pathinfo($path, PATHINFO_DIRNAME))));
+		$this->parser()->setLoader(new Twig_Loader_Filesystem(array($dirName)));
 
 		try
 		{
