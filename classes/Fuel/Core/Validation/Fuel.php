@@ -40,6 +40,9 @@ class Fuel extends Base
 	public function _setApp(Application\Base $app)
 	{
 		$this->app = $app;
+
+		$this->config['valueClass'] = $app->dic->getClass('Validation.Value');
+		$this->config['errorClass'] = $app->dic->getClass('Validation.Error');
 	}
 
 	/**

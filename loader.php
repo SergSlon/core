@@ -39,6 +39,8 @@ $env->dic->setClasses(array(
 	'Security_String.Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
 	'Theme'                   => 'Fuel\\Core\\Theme\\Base',
 	'Validation'              => 'Fuel\\Core\\Validation\\Fuel',
+	'Validation.Value'        => 'Fuel\\Validation\\Value\\Base',
+	'Validation.Error'        => 'Fuel\\Validation\\Error\\Base',
 	'View.Markdown'           => 'Fuel\\Core\\View\\Markdown',
 	'View.Twig'               => 'Fuel\\Core\\View\\Twig',
 ));
