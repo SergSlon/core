@@ -20,7 +20,7 @@ namespace Fuel\Core\Validation;
 interface Validatable
 {
 	/**
-	 * Returns an array of arrays describing validations
+	 * Returns an array with validator closures indexed by the input keys they should match
 	 *
 	 * @return  array
 	 *
