@@ -45,6 +45,18 @@ $env->dic->setClasses(array(
 	'View.Twig'               => 'Fuel\\Core\\View\\Twig',
 ));
 
+// Add third party suggested stuff
+$env->dic->setClasses(array(
+	// Swiftmailer
+	'Email' => 'Swift_Message',
+
+	// Imagine
+	'Image'          => 'Imagine\\Gd\\Imagine',
+	'Image.Gd'       => 'Imagine\\Gd\\Imagine',
+	'Image.Imagick'  => 'Imagine\\Imagick\\Imagine',
+	'Image.Gmagick'  => 'Imagine\\Gmagick\\Imagine',
+));
+
 // Forge and return the Core Package object
 return $env->forge('Loader.Package')
 	->setPath(__DIR__)
