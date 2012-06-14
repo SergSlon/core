@@ -10,6 +10,10 @@
 		"fuel/kernel": "dev-master",
 		"fuel/validation":  "dev-master"
 	},
+	"suggest": {
+		"imagine/Imagine": "dev-master",
+		"phpseclib/phpseclib": "dev-master"
+	},
 	"autoload": {
 		"psr-0": { "Fuel\\Core": "classes/" }
 	}
