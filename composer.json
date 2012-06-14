@@ -11,7 +11,8 @@
 		"fuel/validation":  "dev-master"
 	},
 	"suggest": {
-		"imagine/Imagine": "dev-master",
+		"imagine/Imagine": ">=0.2.8",
+		"swiftmailer/swiftmailer": ">=4.1.7",
 		"phpseclib/phpseclib": "dev-master"
 	},
 	"autoload": {
