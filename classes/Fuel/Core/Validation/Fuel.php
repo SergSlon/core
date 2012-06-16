@@ -41,8 +41,18 @@ class Fuel extends Base
 	{
 		$this->app = $app;
 
+		// Fetch the classes to use from the DiC
 		$this->config['valueClass'] = $app->dic->getClass('Validation.Value');
 		$this->config['errorClass'] = $app->dic->getClass('Validation.Error');
+
+		// Attempt to fetch a language-key prefix from config, default to 'validation.'
+		$this->config['languagePrefix'] = rtrim($app->config('validation.languagePrefix', 'validation'), '.').'.';
+
+		// When a language file is given: load it
+		if (isset($this->config['langFile']))
+		{
+			$app->language()->load($this->config['langFile']);
+		}
 	}
 
 	/**
@@ -57,14 +67,35 @@ class Fuel extends Base
 	{
 		// Add the validators from the Validatable
 		$validators = $v->_validation();
-		foreach ($validators as $key => $validator)
+		foreach ($validators as $validation)
 		{
-			$this->validate($key, $validator);
+			list($key, $validator, $label) = array_pad($validation, 3, null);
+			$this->validate($key, $validator, $label);
 		}
 
 		// Add the Validatable as a RuleSet
 		$this->addRuleSet($v);
 
 		return $this;
+	}
+
+	/**
+	 * Get an error message for an error key
+	 *
+	 * @param   string  $error
+	 * @param   mixed   $default
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function getMessage($error, $default = null)
+	{
+		if (isset($this->messages[$error]))
+		{
+			return $this->messages[$error];
+		}
+
+		$languagePrefix = isset($this->config['languagePrefix']) ? $this->config['languagePrefix'] : '';
+		return $this->app->language($languagePrefix, $error, $default);
 	}
 }
