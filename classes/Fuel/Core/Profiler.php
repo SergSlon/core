@@ -92,7 +92,7 @@ class Profiler
 				throw new \RuntimeException('Application "'.$app.'" unknown in Profiler::get_event().');
 			}
 
-			$appEvents = $this->env->loader->apps[$app]->notifier()->getObservedEvents();
+			$appEvents = $this->env->loader->apps[$app]->getNotifier()->getObservedEvents();
 			foreach ($appEvents as $timestamp => $event)
 			{
 				$events[$timestamp] = array('app' => $app, 'event' => $event);
