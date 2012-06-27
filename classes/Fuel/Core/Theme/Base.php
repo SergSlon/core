@@ -110,7 +110,7 @@ class Base
 	 *
 	 * @since  2.0.0
 	 */
-	public function _set_app(Application\Base $app)
+	public function _setApp(Application\Base $app)
 	{
 		$this->app = $app;
 		$this->config = $app->forge('Object_Config', 'theme', $this->config);
@@ -128,7 +128,7 @@ class Base
 				'info_file_type' => 'json',
 			))
 			// Add validators
-			->validators(array());
+			->setValidators(array());
 
 		// define the default theme paths...
 		$this->add_paths($this->config['paths']);
@@ -189,7 +189,7 @@ class Base
 		}
 
 		$view = $this->app->forge('View', null, $data, $auto_filter);
-		$view->set_filename($this->find_file($file), true);
+		$view->setFilename($this->find_file($file), true);
 
 		return $view;
 	}
@@ -200,13 +200,13 @@ class Base
 	 * @param   string  $class
 	 * @param   string  $method
 	 * @param   array   $data
-	 * @return  \Fuel\Core\Presenter\Base
+	 * @return  \Fuel\Kernel\Presenter\Base
 	 *
 	 * @since  1.0.0
 	 */
 	public function presenter($class, $method = 'view', array $data = array())
 	{
-		$class = $this->app->get_class($class);
+		$class = $this->app->getClass($class);
 		$presenter = new $class($method, $data);
 
 		// Some Reflection trickery to prevent the default set_filename usage
@@ -216,8 +216,8 @@ class Base
 		$prop->setValue($presenter, null);
 
 		// Set the app and the Theme View path
-		$presenter->_set_app($this->app);
-		$presenter->set_filename($this->find_file($path ?: $presenter->default_path()), true);
+		$presenter->_setApp($this->app);
+		$presenter->setFilename($this->find_file($path ?: $presenter->getDefaultPath()), true);
 
 		return $presenter;
 	}
@@ -230,7 +230,7 @@ class Base
 	 *
 	 * @since  1.1
 	 */
-	public function asset_path($path)
+	public function assetPath($path)
 	{
 		if ($this->active['path'] === null)
 		{
@@ -255,7 +255,7 @@ class Base
 	 *
 	 * @since  1.1
 	 */
-	public function set_template($template)
+	public function setTemplate($template)
 	{
 		// make sure the template is a View
 		if (is_string($template))
@@ -279,7 +279,7 @@ class Base
 	 *
 	 * @since  1.1
 	 */
-	public function get_template()
+	public function getTemplate()
 	{
 		// make sure the partial entry exists
 		if (empty($this->template))
@@ -324,7 +324,7 @@ class Base
 		// do we have a template view?
 		if (empty($this->template))
 		{
-			throw new \ThemeException('No valid template could be found. Use set_template() to define a page template.');
+			throw new \RuntimeException('No valid template could be found. Use set_template() to define a page template.');
 		}
 
 		// assign the partials to the template

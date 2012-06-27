@@ -20,7 +20,7 @@ $env->dic->setClasses(array(
 	'Cache_Format.Serialize'  => 'Fuel\\Core\\Cache\\Format\\Serialize',
 	'Cache_Format.String'     => 'Fuel\\Core\\Cache\\Storage\\String',
 	'Cache_Storage'           => 'Fuel\\Core\\Cache\\Storage\\File',
-	'Debug'                   => 'Fuel\\Core\\Debug',
+	'Debugger'                => 'Fuel\\Core\\Debug',
 	'Error'                   => 'Fuel\\Core\\Error',
 	'Loader.Closure'          => 'Fuel\\Core\\Loader\\Closure',
 	'Loader.Lowercase'        => 'Fuel\\Core\\Loader\\Lowercase',

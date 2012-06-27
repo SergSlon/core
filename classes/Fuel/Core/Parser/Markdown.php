@@ -27,7 +27,7 @@ class Markdown implements Parsable
 	 */
 	protected $parser;
 
-	public function extension()
+	public function getExtension()
 	{
 		return 'md';
 	}

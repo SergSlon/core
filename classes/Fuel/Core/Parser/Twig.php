@@ -67,7 +67,7 @@ class Twig implements Parsable
 	 *
 	 * @since  2.0.0
 	 */
-	public function extension()
+	public function getExtension()
 	{
 		return 'twig';
 	}
@@ -87,14 +87,14 @@ class Twig implements Parsable
 				'debug'                => false,
 				'charset'              => 'utf-8',
 				'base_template_class'  => 'Twig_Template',
-				'cache'                => $this->app->config('cache.path').'_twig/',
+				'cache'                => $this->app->getConfig('cache.path').'_twig/',
 				'auto_reload'          => true,
 				'strict_variables'     => false,
 				'autoescape'           => false,
 				'optimizations'        => -1,
 			));
 
-			$dirNames = (array) $this->app->config('parser.dir');
+			$dirNames = (array) $this->app->getConfig('parser.dir');
 			$this->parser->setLoader(new Twig_Loader_Filesystem($dirNames));
 		}
 
@@ -116,7 +116,7 @@ class Twig implements Parsable
 		$path = realpath($path);
 
 		// Extract View name/extension (ex. "template.twig")
-		$dirNames = (array) $this->app->config('parser.dir', dirname($path));
+		$dirNames = (array) $this->app->getConfig('parser.dir', dirname($path));
 		foreach ($dirNames as $dir)
 		{
 			$dir = realpath($dir);

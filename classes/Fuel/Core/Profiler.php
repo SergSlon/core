@@ -50,7 +50,7 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function timeElapsed()
+	public function getTimeElapsed()
 	{
 		return microtime(true) - $this->env->getVar('initTime');
 	}
@@ -63,7 +63,7 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function memUsage($peak = false)
+	public function getMemUsage($peak = false)
 	{
 		$usage = $peak ? memory_get_peak_usage() : memory_get_usage();
 		return $usage - $this->env->getVar('initMem');
@@ -78,7 +78,7 @@ class Profiler
 	 *
 	 * @since  2.0.0
 	 */
-	public function events($apps = null)
+	public function getObservedEvents($apps = null)
 	{
 		$apps = is_null($apps) ? array_keys($this->env->loader->apps) : (array) $apps;
 		$events = array(
@@ -92,7 +92,7 @@ class Profiler
 				throw new \RuntimeException('Application "'.$app.'" unknown in Profiler::get_event().');
 			}
 
-			$appEvents = $this->env->loader->apps[$app]->notifier()->observed();
+			$appEvents = $this->env->loader->apps[$app]->notifier()->getObservedEvents();
 			foreach ($appEvents as $timestamp => $event)
 			{
 				$events[$timestamp] = array('app' => $app, 'event' => $event);

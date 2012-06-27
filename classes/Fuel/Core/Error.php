@@ -138,7 +138,7 @@ class Error extends \Fuel\Kernel\Error
 			}
 		}
 
-		$data['debugLines'] = $this->app->env->debug()->fileLines($data['filePath'], $data['errorLine'], $fatal);
+		$data['debugLines'] = $this->app->env->getDebugger()->fileLines($data['filePath'], $data['errorLine'], $fatal);
 		$data['origFilePath'] = $data['filePath'];
 		$data['filePath'] = $this->app->env->cleanPath($data['filePath']);
 		$data['filePath'] = str_replace("\\", "/", $data['filePath']);
