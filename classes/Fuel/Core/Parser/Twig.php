@@ -81,17 +81,23 @@ class Twig implements Parsable
 	 */
 	public function parser()
 	{
-		// @todo replace this with config
-		! isset($this->parser) and $this->parser = new Twig_Environment(null, array(
-			'debug'                => false,
-			'charset'              => 'utf-8',
-			'base_template_class'  => 'Twig_Template',
-			'cache'                => $this->app->config('cache.path').'_twig/',
-			'auto_reload'          => true,
-			'strict_variables'     => false,
-			'autoescape'           => false,
-			'optimizations'        => -1,
-		));
+		if ( ! isset($this->parser))
+		{
+			$this->parser = new Twig_Environment(null, array(
+				'debug'                => false,
+				'charset'              => 'utf-8',
+				'base_template_class'  => 'Twig_Template',
+				'cache'                => $this->app->config('cache.path').'_twig/',
+				'auto_reload'          => true,
+				'strict_variables'     => false,
+				'autoescape'           => false,
+				'optimizations'        => -1,
+			));
+
+			$dirNames = (array) $this->app->config('parser.dir');
+			$this->parser->setLoader(new Twig_Loader_Filesystem($dirNames));
+		}
+
 		return $this->parser;
 	}
 
@@ -107,16 +113,23 @@ class Twig implements Parsable
 	 */
 	public function parseFile($path, array $data = array())
 	{
-		// Extract View name/extension (ex. "template.twig")
-		$dirName   = $this->app->config('parser.dir', dirname($path));
-		$viewName  = substr($path, strlen($dirName));
+		$path = realpath($path);
 
-		// Use Twig filesystem loader
-		$this->parser()->setLoader(new Twig_Loader_Filesystem(array($dirName)));
+		// Extract View name/extension (ex. "template.twig")
+		$dirNames = (array) $this->app->config('parser.dir', dirname($path));
+		foreach ($dirNames as $dir)
+		{
+			$dir = realpath($dir);
+			if (strpos($path, $dir) === 0)
+			{
+				$path = substr($path, strlen($dir) + 1);
+				break;
+			}
+		}
 
 		try
 		{
-			return $this->parser()->loadTemplate($viewName)->render($data);
+			return $this->parser()->loadTemplate($path)->render($data);
 		}
 		catch (Exception $e)
 		{
@@ -141,8 +154,14 @@ class Twig implements Parsable
 		try
 		{
 			$this->loaderString or $this->loaderString = new Twig_Loader_String();
+
+			$fileLoader = $this->parser()->getLoader();
 			$this->parser()->setLoader($this->loaderString);
-			return $this->parser()->loadTemplate($template)->render($data);
+
+			$output = $this->parser()->loadTemplate($template)->render($data);
+			$this->parser()->setLoader($fileLoader);
+
+			return $output;
 		}
 		catch (Exception $e)
 		{
