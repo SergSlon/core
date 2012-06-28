@@ -39,7 +39,7 @@ class Markdown implements Parsable
 	 *
 	 * @since  1.1.0
 	 */
-	public function parser()
+	public function getParser()
 	{
 		! isset($this->parser) and $parser = new MarkdownParser();
 		return $this->parser;
@@ -70,6 +70,6 @@ class Markdown implements Parsable
 	 */
 	public function parseString($string, array $data = array())
 	{
-		return $this->parser()->transform($string);
+		return $this->getParser()->transform($string);
 	}
 }

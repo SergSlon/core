@@ -79,7 +79,7 @@ class Twig implements Parsable
 	 *
 	 * @since  1.1.0
 	 */
-	public function parser()
+	public function getParser()
 	{
 		if ( ! isset($this->parser))
 		{
@@ -129,7 +129,7 @@ class Twig implements Parsable
 
 		try
 		{
-			return $this->parser()->loadTemplate($path)->render($data);
+			return $this->getParser()->loadTemplate($path)->render($data);
 		}
 		catch (Exception $e)
 		{
@@ -155,11 +155,11 @@ class Twig implements Parsable
 		{
 			$this->loaderString or $this->loaderString = new Twig_Loader_String();
 
-			$fileLoader = $this->parser()->getLoader();
-			$this->parser()->setLoader($this->loaderString);
+			$fileLoader = $this->getParser()->getLoader();
+			$this->getParser()->setLoader($this->loaderString);
 
-			$output = $this->parser()->loadTemplate($template)->render($data);
-			$this->parser()->setLoader($fileLoader);
+			$output = $this->getParser()->loadTemplate($template)->render($data);
+			$this->getParser()->setLoader($fileLoader);
 
 			return $output;
 		}

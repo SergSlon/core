@@ -75,7 +75,7 @@ class Base
 				),
 			))
 			// Add validators
-			->validators(array(
+			->setValidators(array(
 				'directOutput' => 'is_bool',
 				'autoId' => 'is_bool',
 				'securityClean' => 'is_bool',

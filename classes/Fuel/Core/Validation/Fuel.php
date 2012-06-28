@@ -46,12 +46,12 @@ class Fuel extends Base
 		$this->config['errorClass'] = $app->dic->getClass('Validation.Error');
 
 		// Attempt to fetch a language-key prefix from config, default to 'validation.'
-		$this->config['languagePrefix'] = rtrim($app->config('validation.languagePrefix', 'validation'), '.').'.';
+		$this->config['languagePrefix'] = rtrim($app->getConfig('validation.languagePrefix', 'validation'), '.').'.';
 
 		// When a language file is given: load it
 		if (isset($this->config['langFile']))
 		{
-			$app->language()->load($this->config['langFile']);
+			$app->getLanguage()->load($this->config['langFile']);
 		}
 	}
 
@@ -96,6 +96,6 @@ class Fuel extends Base
 		}
 
 		$languagePrefix = isset($this->config['languagePrefix']) ? $this->config['languagePrefix'] : '';
-		return $this->app->language($languagePrefix, $error, $default);
+		return $this->app->getLanguage($languagePrefix, $error, $default);
 	}
 }
