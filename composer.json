@@ -9,6 +9,7 @@
 		"php": ">=5.3.0",
 		"fuel/kernel": "dev-master",
 		"fuel/cache":  "dev-master",
+		"fuel/fieldset":  "dev-master",
 		"fuel/job":  "dev-master",
 		"fuel/migration":  "dev-master",
 		"fuel/validation":  "dev-master"
