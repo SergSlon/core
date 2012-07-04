@@ -13,13 +13,12 @@ require 'helpers.php';
 
 // Add some Core classes to the global DiC
 $env->dic->setClasses(array(
-	'Asset'                   => 'Fuel\\Core\\Asset\\Base',
-	'Cache'                   => 'Fuel\\Core\\Cache\\Base',
-	'Cache_Format'            => 'Fuel\\Core\\Cache\\Format\\Serialize',
-	'Cache_Format.Json'       => 'Fuel\\Core\\Cache\\Format\\Json',
-	'Cache_Format.Serialize'  => 'Fuel\\Core\\Cache\\Format\\Serialize',
-	'Cache_Format.String'     => 'Fuel\\Core\\Cache\\Storage\\String',
-	'Cache_Storage'           => 'Fuel\\Core\\Cache\\Storage\\File',
+	'Cache'                   => 'Fuel\\Cache\\Base',
+	'Cache_Format'            => 'Fuel\\Cache\\Format\\Serialize',
+	'Cache_Format.Json'       => 'Fuel\\Cache\\Format\\Json',
+	'Cache_Format.Serialize'  => 'Fuel\\Cache\\Format\\Serialize',
+	'Cache_Format.String'     => 'Fuel\\Cache\\Storage\\String',
+	'Cache_Storage'           => 'Fuel\\Cache\\Storage\\File',
 	'Debugger'                => 'Fuel\\Core\\Debug',
 	'Error'                   => 'Fuel\\Core\\Error',
 	'Loader.Closure'          => 'Fuel\\Core\\Loader\\Closure',
@@ -37,7 +36,6 @@ $env->dic->setClasses(array(
 	'Profiler'                => 'Fuel\\Core\\Profiler',
 	'Request.Curl'            => 'Fuel\\Core\\Request\\Curl',
 	'Security_String.Xss'     => 'Fuel\\Core\\Security\\String\\Xss',
-	'Theme'                   => 'Fuel\\Core\\Theme\\Base',
 	'Validation'              => 'Fuel\\Core\\Validation\\Fuel',
 	'Validation.Value'        => 'Fuel\\Validation\\Value\\Base',
 	'Validation.Error'        => 'Fuel\\Validation\\Error\\Base',
