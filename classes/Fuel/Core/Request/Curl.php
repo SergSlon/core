@@ -11,7 +11,7 @@
 namespace Fuel\Core\Request;
 
 use Fuel\Kernel\Request\Exception;
-use Classes\Request\Base;
+use Fuel\Aliases\Request\Base;
 
 /**
  * Request class for executing cURL requests.

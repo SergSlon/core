@@ -15,6 +15,8 @@ namespace Fuel\Core\Data;
  *
  * @package  Fuel\Core
  *
+ * @property  \Fuel\Kernel\Application\Base  $app
+ *
  * @since  2.0.0
  */
 trait LanguageTrait
@@ -33,7 +35,7 @@ trait LanguageTrait
 	 */
 	public function language($value = null, $default = null)
 	{
-		$language = $this->language ?: $this->app->language();
+		$language = $this->language ?: $this->app->getLanguage();
 
 		if (func_num_args() == 0)
 		{

@@ -10,7 +10,7 @@
 
 namespace Fuel\Core\Security\String;
 
-use Fuel\Kernel\Security\String;
+use Fuel\Aliases\Security\String;
 
 /**
  * htmLawed string cleaner

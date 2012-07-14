@@ -9,8 +9,8 @@
  */
 
 namespace Fuel\Core\Form;
+
 use Fuel\Kernel\Application;
-use Fuel\Kernel\View;
 
 /**
  * Form HTML builder class
@@ -56,7 +56,7 @@ class Base
 	public function _setApp(Application\Base $app)
 	{
 		$this->app = $app;
-		$this->config = $app->forge('Object_Config', 'form', $this->config);
+		$this->config = $app->forge('Config\Object', 'form', $this->config);
 
 		$this->config
 			// Set defaults

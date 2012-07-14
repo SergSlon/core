@@ -15,6 +15,8 @@ namespace Fuel\Core\Data;
  *
  * @package  Fuel\Core
  *
+ * @property  \Fuel\Kernel\Application\Base  $app
+ *
  * @since  2.0.0
  */
 trait ConfigTrait
@@ -33,7 +35,7 @@ trait ConfigTrait
 	 */
 	public function config($value = null, $default = null)
 	{
-		$config = $this->config ?: $this->app->config;
+		$config = $this->config ?: $this->app->getConfig();
 
 		if (func_num_args() == 0)
 		{

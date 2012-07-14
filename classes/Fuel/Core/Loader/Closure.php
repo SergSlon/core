@@ -10,7 +10,7 @@
 
 namespace Fuel\Core\Loader;
 
-use Classes\Loader\Package;
+use Fuel\Aliases\Loader\Package;
 
 /**
  * Package loader with Closure that translates classname to a path.

@@ -10,7 +10,7 @@
 
 namespace Fuel\Core\Loader;
 
-use Classes\Loader\Package;
+use Fuel\Aliases\Loader\Package;
 
 /**
  * Package loader that lowercases the PSR-0 translation of a classname.

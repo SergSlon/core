@@ -15,6 +15,8 @@ namespace Fuel\Core\DiC;
  *
  * @package  Fuel\Core
  *
+ * @property  \Fuel\Kernel\Application\Base  $app
+ *
  * @since  2.0.0
  */
 trait DiCTrait
@@ -32,10 +34,10 @@ trait DiCTrait
 	 *
 	 * @since  2.0.0
 	 */
-	public function get_class($class)
+	public function getClass($class)
 	{
 		$dic = $this->dic ?: $this->app->dic;
-		return $dic->get_class($class);
+		return $dic->getClass($class);
 	}
 
 	/**
@@ -62,9 +64,9 @@ trait DiCTrait
 	 *
 	 * @since  2.0.0
 	 */
-	public function get_object($class, $name = null)
+	public function getObject($class, $name = null)
 	{
 		$dic = $this->dic ?: $this->app->dic;
-		return $dic->get_object($class, $name);
+		return $dic->getObject($class, $name);
 	}
 }

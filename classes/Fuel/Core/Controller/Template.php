@@ -9,7 +9,8 @@
  */
 
 namespace Fuel\Core\Controller;
-use Classes\Controller\Base;
+
+use Fuel\Aliases\Controller\Base;
 
 /**
  * Template Controller class
