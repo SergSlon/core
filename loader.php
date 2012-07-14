@@ -24,7 +24,7 @@ $env->dic->setClasses(array(
 	'Error'                   => 'Fuel\Core\Error',
 	'Loader.Closure'          => 'Fuel\Core\Loader\Closure',
 	'Loader.Lowercase'        => 'Fuel\Core\Loader\Lowercase',
-	'FieldSet'                => 'Fuel\FieldSet\Base',
+	'FieldSet'                => 'Fuel\Core\FieldSet\Fuel',
 	'FieldSet\Field'          => 'Fuel\FieldSet\Field\Text',
 	'FieldSet\Field.Button'   => 'Fuel\FieldSet\Field\Button',
 	'FieldSet\Field.Options'  => 'Fuel\FieldSet\Field\Options',
@@ -64,4 +64,5 @@ return $env->forge('Loader.Package')
 	->addClassAliases(array(
 		'Fuel\Aliases\Controller\Template'  => 'Fuel\Core\Controller\Template',
 		'Fuel\Aliases\Request\Curl'         => 'Fuel\Core\Request\Curl',
+		'Fuel\Aliases\FieldSet\Field\Base'  => 'Fuel\Core\FieldSet\Field\Base',
 	));
