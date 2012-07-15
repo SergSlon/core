@@ -168,16 +168,24 @@ class Uri
 		$this->app = $app;
 
 		// When path was relative use the current input as scheme & hostname
-		if (is_null($this->scheme) or is_null($this->hostname))
+		if (is_null($this->scheme) and is_null($this->hostname))
 		{
 			$input = ($req = $app->activeRequest()) ? $req->input : $app->env->input;
 
-			is_null($this->scheme)
-				and $this->scheme = $input->getScheme();
-			is_null($this->hostname)
-				and $this->hostname = $input->getServer('SERVER_NAME', $app->env->input->getServer('SERVER_NAME'));
+			$this->scheme = $input->getScheme();
+			$this->hostname = $input->getServer('SERVER_NAME', $app->env->input->getServer('SERVER_NAME'));
+
+			// when no extension was given, use application default
 			is_null($this->extension)
 				and $this->extension = $app->getConfig('extension', null);
+
+			// when no port was given, default to current port
+			if (is_null($this->port)
+				and ($port = $input->getServer('SERVER_PORT', $app->env->input->getServer('SERVER_PORT')))
+				and ! in_array($port, array(80, 443)))
+			{
+				$this->setPort($port);
+			}
 		}
 	}
 
@@ -240,6 +248,8 @@ class Uri
 	 * Get the username from the user value
 	 *
 	 * @return  string
+	 *
+	 * @since  2.0.0
 	 */
 	public function getUsername()
 	{
