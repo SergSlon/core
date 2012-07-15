@@ -10,6 +10,8 @@
 
 namespace Fuel\Core\Data;
 
+use Fuel\Kernel\Data\Language;
+
 /**
  * Trait to allow easy access to a Language object
  *
@@ -22,9 +24,9 @@ namespace Fuel\Core\Data;
 trait LanguageTrait
 {
 	/**
-	 * @var  \Fuel\Kernel\Data\Language  overwrite to use instead of Application language
+	 * @var  string|\Fuel\Kernel\Data\Language  name for the Language or null to use the App's
 	 */
-	public $language;
+	protected $language;
 
 	/**
 	 * Fetch a language line or return the language object
@@ -33,15 +35,34 @@ trait LanguageTrait
 	 * @param   null|mixed   $default
 	 * @return  mixed
 	 */
-	public function language($value = null, $default = null)
+	public function getLanguage($value = null, $default = null)
 	{
-		$language = $this->language ?: $this->app->getLanguage();
+		if ( ! $this->language instanceof Language)
+		{
+			/** @var  \Fuel\Kernel\Application\Base  $app  support either $_app or $app property */
+			$app = property_exists($this, '_app') ? $this->_app : $this->app;
+			if (is_string($this->language))
+			{
+				try
+				{
+					$this->language = $app->getObject('Language', $this->language);
+				}
+				catch (\RuntimeException $e)
+				{
+					$this->language = $app->forge(array('Language', $this->language));
+				}
+			}
+			elseif (is_null($this->language))
+			{
+				$this->language = $app->language;
+			}
+		}
 
 		if (func_num_args() == 0)
 		{
-			return $language;
+			return $this->language;
 		}
 
-		return $language->get($value, $default);
+		return $this->language->get($value, $default);
 	}
 }

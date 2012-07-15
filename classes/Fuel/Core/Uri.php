@@ -99,7 +99,7 @@ class Uri
 			// Fetch the scheme prefix, and when present also the hostname
 			if (($pos = strpos($uri, '://')) !== false)
 			{
-				$this->scheme = substr($uri, 0, $pos);
+				$this->scheme = substr($uri, 0, $pos) ?: null;
 				$uri = substr($uri, $pos + 3);
 
 				if (($pos = strpos($uri, '@')) !== false

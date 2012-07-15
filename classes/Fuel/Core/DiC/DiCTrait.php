@@ -10,21 +10,47 @@
 
 namespace Fuel\Core\DiC;
 
+use Fuel\Kernel\DiC\Dependable;
+
 /**
  * Trait to allow easy access to a DiC
  *
  * @package  Fuel\Core
- *
- * @property  \Fuel\Kernel\Application\Base  $app
  *
  * @since  2.0.0
  */
 trait DiCTrait
 {
 	/**
-	 * @var  \Fuel\Kernel\Dic\Dependable  overwrite to use instead of Application DiC
+	 * @var  string|\Fuel\Kernel\Dic\Dependable  name for the DiC or null to use the App's
 	 */
-	public $dic;
+	protected $dic;
+
+	public function getDiC()
+	{
+		if ( ! $this->dic instanceof Dependable)
+		{
+			/** @var  \Fuel\Kernel\Application\Base  $app  support either $_app or $app property */
+			$app = property_exists($this, '_app') ? $this->_app : $this->app;
+			if (is_string($this->dic))
+			{
+				try
+				{
+					$this->dic = $app->getObject('Notifier', $this->dic);
+				}
+				catch (\RuntimeException $e)
+				{
+					$this->dic = $app->forge(array('Notifier', $this->dic));
+				}
+			}
+			elseif (is_null($this->dic))
+			{
+				$this->dic = $app->dic;
+			}
+		}
+
+		return $this->dic;
+	}
 
 	/**
 	 * Translates a classname to the one set in the DiC classes property
@@ -36,8 +62,7 @@ trait DiCTrait
 	 */
 	public function getClass($class)
 	{
-		$dic = $this->dic ?: $this->app->dic;
-		return $dic->getClass($class);
+		return $this->getDiC()->getClass($class);
 	}
 
 	/**
@@ -50,8 +75,7 @@ trait DiCTrait
 	 */
 	public function forge($classname)
 	{
-		$dic = $this->dic ?: $this->app->dic;
-		return call_user_func_array(array($dic, 'forge'), func_get_args());
+		return call_user_func_array(array($this->getDiC(), 'forge'), func_get_args());
 	}
 
 	/**
@@ -66,7 +90,6 @@ trait DiCTrait
 	 */
 	public function getObject($class, $name = null)
 	{
-		$dic = $this->dic ?: $this->app->dic;
-		return $dic->getObject($class, $name);
+		return $this->getDiC()->getObject($class, $name);
 	}
 }

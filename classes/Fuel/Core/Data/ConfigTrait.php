@@ -10,6 +10,8 @@
 
 namespace Fuel\Core\Data;
 
+use Fuel\Kernel\Data\Config;
+
 /**
  * Trait to allow easy access to a Config object
  *
@@ -22,9 +24,9 @@ namespace Fuel\Core\Data;
 trait ConfigTrait
 {
 	/**
-	 * @var  \Fuel\Kernel\Data\Config  overwrite to use instead of Application config
+	 * @var  string|\Fuel\Kernel\Data\Config  name for the Config or null to use the App's
 	 */
-	public $config;
+	protected $config;
 
 	/**
 	 * Fetch a configuration value or return the configuration object
@@ -33,15 +35,34 @@ trait ConfigTrait
 	 * @param   null|mixed   $default
 	 * @return  mixed
 	 */
-	public function config($value = null, $default = null)
+	public function getConfig($value = null, $default = null)
 	{
-		$config = $this->config ?: $this->app->getConfig();
+		if ( ! $this->config instanceof Config)
+		{
+			/** @var  \Fuel\Kernel\Application\Base  $app  support either $_app or $app property */
+			$app = property_exists($this, '_app') ? $this->_app : $this->app;
+			if (is_string($this->config))
+			{
+				try
+				{
+					$this->config = $app->getObject('Config', $this->config);
+				}
+				catch (\RuntimeException $e)
+				{
+					$this->config = $app->forge(array('Config', $this->config));
+				}
+			}
+			elseif (is_null($this->config))
+			{
+				$this->config = $app->config;
+			}
+		}
 
 		if (func_num_args() == 0)
 		{
-			return $config;
+			return $this->config;
 		}
 
-		return $config->get($value, $default);
+		return $this->config->get($value, $default);
 	}
 }
