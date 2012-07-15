@@ -37,6 +37,8 @@ $env->dic->setClasses(array(
 	'Parser.Twig'             => 'Fuel\Core\Parser\Twig',
 	'Profiler'                => 'Fuel\Core\Profiler',
 	'Request.Curl'            => 'Fuel\Core\Request\Curl',
+	'Security\Csrf'           => 'Fuel\Core\Security\Csrf',
+	'Security\Csrf.Session'   => 'Fuel\Core\Security\Csrf\Session',
 	'Security\String.Xss'     => 'Fuel\Core\Security\String\Xss',
 	'Session'                 => 'Fuel\Core\Session\PhpNative',
 	'Uri'                     => 'Fuel\Core\Uri',
