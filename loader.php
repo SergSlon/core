@@ -38,6 +38,7 @@ $env->dic->setClasses(array(
 	'Profiler'                => 'Fuel\Core\Profiler',
 	'Request.Curl'            => 'Fuel\Core\Request\Curl',
 	'Security\String.Xss'     => 'Fuel\Core\Security\String\Xss',
+	'Session'                 => 'Fuel\Core\Session\PhpNative',
 	'Uri'                     => 'Fuel\Core\Uri',
 	'Validation'              => 'Fuel\Core\Validation\Fuel',
 	'Validation\Value'        => 'Fuel\Validation\Value\Base',
