@@ -40,6 +40,13 @@ class Uri
 	 *
 	 * @since  2.0.0
 	 */
+	protected $user;
+
+	/**
+	 * @var  string
+	 *
+	 * @since  2.0.0
+	 */
 	protected $hostname;
 
 	/**
@@ -83,12 +90,19 @@ class Uri
 		if (is_string($uri))
 		{
 			// Fetch the scheme prefix, and when present also the hostname
-			if ($pos = strpos($uri, '://'))
+			if (($pos = strpos($uri, '://')) !== false)
 			{
 				$this->scheme = substr($uri, 0, $pos);
 				$uri = substr($uri, $pos + 3);
 
-				if ($pos = strpos($uri, '/'))
+				if (($pos = strpos($uri, '@')) !== false
+					and ($pos < strpos($uri, '/') or strpos($uri, '/') === false))
+				{
+					$this->user = substr($uri, 0, $pos);
+					$uri = substr($uri, $pos + 1);
+				}
+
+				if (($pos = strpos($uri, '/')) !== false)
 				{
 					$this->hostname = substr($uri, 0, $pos);
 					$uri = substr($uri, $pos + 1);
@@ -106,6 +120,8 @@ class Uri
 		{
 			isset($uri['scheme'])
 				and $this->setScheme($uri['scheme']);
+			isset($uri['username'])
+				and $this->setUser($uri['username'], isset($uri['password']) ? $uri['password'] : null);
 			isset($uri['hostname'])
 				and $this->setHostname($uri['hostname']);
 			isset($uri['segments'])
@@ -174,6 +190,56 @@ class Uri
 	public function getScheme($withPostfix = false)
 	{
 		return $this->scheme.(($withPostfix and $this->scheme) ? '://' : '');
+	}
+
+	/**
+	 * Set the username and optionally a password
+	 *
+	 * @param   string  $username
+	 * @param   string  $password
+	 * @return  Uri
+	 *
+	 * @since  2.0.0
+	 */
+	public function setUser($username, $password = null)
+	{
+		$this->user = strval($username).($password ? ':'.strval($password) : '');
+		return $this;
+	}
+
+	/**
+	 * Returns 'username' or 'username:password' when given in the URI
+	 *
+	 * @param   bool  $withSuffix
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function getUser($withSuffix = false)
+	{
+		return $this->user.($withSuffix ? '@' : '');
+	}
+
+	/**
+	 * Get the username from the user value
+	 *
+	 * @return  string
+	 */
+	public function getUsername()
+	{
+		return ($pos = strpos($this->user, ':')) ? substr($this->user, 0, $pos) : $this->user;
+	}
+
+	/**
+	 * Get the password from the user value
+	 *
+	 * @return  null|string
+	 *
+	 * @since  2.0.0
+	 */
+	public function getPassword()
+	{
+		return ($pos = strpos($this->user, ':')) ? substr($this->user, $pos + 1) : null;
 	}
 
 	/**
@@ -438,6 +504,7 @@ class Uri
 	public function get()
 	{
 		return $this->getScheme(true).
+			$this->getUser(true).
 			$this->getHostname().
 			$this->getPath().
 			$this->getExtension(true).
