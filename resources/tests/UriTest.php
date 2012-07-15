@@ -9,13 +9,14 @@ class UriTest extends \PHPUnit_Framework_TestCase
 {
 	public function testConstruct()
 	{
-		$uri = new Uri('https://user:pass@answer.to/life/the/universe.and?everything=42');
+		$uri = new Uri('https://user:pass@answer.to:5/life/the/universe.and?everything=42');
 
 		$this->assertEquals('https', $uri->getScheme());
 		$this->assertEquals('user:pass', $uri->getUser());
 		$this->assertEquals('user', $uri->getUsername());
 		$this->assertEquals('pass', $uri->getPassword());
 		$this->assertEquals('answer.to', $uri->getHostname());
+		$this->assertEquals(5, $uri->getPort());
 		$this->assertEquals(array('life', 'the', 'universe'), $uri->getSegment());
 		$this->assertEquals('and', $uri->getExtension());
 		$this->assertEquals(array('everything' => '42'), $uri->getQuery());

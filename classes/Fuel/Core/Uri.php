@@ -50,6 +50,13 @@ class Uri
 	protected $hostname;
 
 	/**
+	 * @var  int
+	 *
+	 * @since  2.0.0
+	 */
+	protected $port;
+
+	/**
 	 * @var  string
 	 *
 	 * @since  2.0.0
@@ -102,6 +109,13 @@ class Uri
 					$uri = substr($uri, $pos + 1);
 				}
 
+				if (($pos = strpos($uri, ':')) !== false
+					and ($pos < ($spos = strpos($uri, '/')) or $spos === false))
+				{
+					$this->port = intval(substr($uri, $pos + 1, $spos - $pos - 1));
+					$uri = substr($uri, 0 , $pos).substr($uri, $spos);
+				}
+
 				if (($pos = strpos($uri, '/')) !== false)
 				{
 					$this->hostname = substr($uri, 0, $pos);
@@ -124,6 +138,8 @@ class Uri
 				and $this->setUser($uri['username'], isset($uri['password']) ? $uri['password'] : null);
 			isset($uri['hostname'])
 				and $this->setHostname($uri['hostname']);
+			isset($uri['port'])
+				and $this->setHostname($uri['port']);
 			isset($uri['segments'])
 				and $this->setSegments($uri['segments']);
 			isset($uri['path'])
@@ -217,7 +233,7 @@ class Uri
 	 */
 	public function getUser($withSuffix = false)
 	{
-		return $this->user.($withSuffix ? '@' : '');
+		return $this->user.(($this->user and $withSuffix) ? '@' : '');
 	}
 
 	/**
@@ -266,6 +282,33 @@ class Uri
 	public function getHostname()
 	{
 		return $this->hostname;
+	}
+
+	/**
+	 * Change the URI's port number
+	 *
+	 * @param   string  $port
+	 * @return  Uri
+	 *
+	 * @since  2.0.0
+	 */
+	public function setPort($port)
+	{
+		$this->port = intval($port);
+		return $this;
+	}
+
+	/**
+	 * Fetch the URI's hostname
+	 *
+	 * @param   bool  $withPrefix
+	 * @return  string
+	 *
+	 * @since  2.0.0
+	 */
+	public function getPort($withPrefix = false)
+	{
+		return (( ! is_null($this->port) and $withPrefix) ? ':' : '').$this->port;
 	}
 
 	/**
@@ -506,6 +549,7 @@ class Uri
 		return $this->getScheme(true).
 			$this->getUser(true).
 			$this->getHostname().
+			$this->getPort(true).
 			$this->getPath().
 			$this->getExtension(true).
 			$this->getQueryString(true);
