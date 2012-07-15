@@ -50,7 +50,7 @@
 			$id = 0;
 			foreach ($backtrace as $trace):
 				$id++;
-				$debugLines = $env->debug()->fileLines($trace['file'], $trace['line']);
+				$debugLines = $env->getDebugger()->fileLines($trace['file'], $trace['line']);
 		?>
 			<li>
 				<a href="#" onclick="javascript:fuel_toggle('backtrace_<?php echo $id; ?>');return false;"><?php echo $env->cleanPath($trace['file']).' @ line '.$trace['line']; ?></a>
@@ -71,7 +71,7 @@
 		$id = 0;
 		foreach ($nonFatal as $e):
 			$id++;
-			$debugLines = $env->debug()->fileLines($e->getFile(), $e->getLine());
+			$debugLines = $env->getDebugger()->fileLines($e->getFile(), $e->getLine());
 		?>
 			<li>
 				<a href="#" onclick="javascript:fuel_toggle('non_fatal_<?php echo $id; ?>');return false;"><?php echo $e->getCode(); ?>: <?php echo $e->getMessage(); ?> in <?php echo $env->cleanPath($e->getFile()); ?> @ line <?php echo $e->getLine(); ?></a>
