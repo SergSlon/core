@@ -26,7 +26,7 @@ class Xss extends String\Base
 		// Load htmLawed if necessary
 		if ( ! function_exists('htmLawed'))
 		{
-			require $this->app->env->path('core').'resources/vendor/htmlawed/htmLawed.php';
+			require $this->app->env->getPath('core').'resources/vendor/htmlawed/htmLawed.php';
 		}
 
 		return htmLawed($input, array('safe' => 1, 'balanced' => 0));
