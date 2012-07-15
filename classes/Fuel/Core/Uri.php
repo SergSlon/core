@@ -170,7 +170,7 @@ class Uri
 		// When path was relative use the current input as scheme & hostname
 		if (is_null($this->scheme) and is_null($this->hostname))
 		{
-			$input = ($req = $app->activeRequest()) ? $req->input : $app->env->input;
+			$input = ($req = $app->getActiveRequest()) ? $req->input : $app->env->input;
 
 			$this->scheme = $input->getScheme();
 			$this->hostname = $input->getServer('SERVER_NAME', $app->env->input->getServer('SERVER_NAME'));
