@@ -42,8 +42,8 @@ class Fuel extends Base
 		$this->app = $app;
 
 		// Fetch the classes to use from the DiC
-		$this->config['valueClass'] = $app->dic->getClass('Validation.Value');
-		$this->config['errorClass'] = $app->dic->getClass('Validation.Error');
+		$this->config['valueClass'] = $app->dic->getClass('Validation\Value');
+		$this->config['errorClass'] = $app->dic->getClass('Validation\Error');
 
 		// Attempt to fetch a language-key prefix from config, default to 'validation.'
 		$this->config['languagePrefix'] = rtrim($app->getConfig('validation.languagePrefix', 'validation'), '.').'.';
