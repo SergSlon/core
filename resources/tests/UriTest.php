@@ -9,7 +9,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 {
 	public function testConstruct()
 	{
-		$uri = new Uri('https://user:pass@answer.to:5/life/the/universe.and?everything=42');
+		$uriString = 'https://user:pass@answer.to:5/life/the/universe.and?everything=42';
+		$uri = new Uri($uriString);
 
 		$this->assertEquals('https', $uri->getScheme());
 		$this->assertEquals('user:pass', $uri->getUser());
@@ -20,6 +21,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('life', 'the', 'universe'), $uri->getSegment());
 		$this->assertEquals('and', $uri->getExtension());
 		$this->assertEquals(array('everything' => '42'), $uri->getQuery());
+		$this->assertEquals($uriString, $uri->get());
+		$this->assertEquals($uriString, strval($uri));
 	}
 
 	public function testConstructArray()
@@ -73,10 +76,80 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('test://', $uri->getScheme(true));
 	}
 
+	public function testSetGetUser()
+	{
+		$uri = new Uri();
+		$user = 'Jelmer';
+		$pass = 'noneOfYourBusiness';
+		$uri->setUser($user, $pass);
+
+		$this->assertEquals($user.':'.$pass, $uri->getUser());
+		$this->assertEquals($user.':'.$pass.'@', $uri->getUser(true));
+		$this->assertEquals($user, $uri->getUserName());
+		$this->assertEquals($pass, $uri->getPassword());
+	}
+
 	public function testSetGetHostname()
 	{
 		$uri = new Uri();
 		$uri->setHostname('not.butter');
 		$this->assertEquals('not.butter', $uri->getHostname());
+	}
+
+	public function testSetGetPort()
+	{
+		$uri = new Uri();
+		$uri->setPort(8443);
+		$this->assertEquals(8443, $uri->getPort());
+		$this->assertEquals(':8443', $uri->getPort(true));
+	}
+
+	public function testSetGetSegments()
+	{
+		$uri = new Uri();
+		$uri->setSegments(array('one', 'two', 'three'));
+
+		$this->assertEquals('one', $uri->getSegment(1));
+		$this->assertEquals('two', $uri->getSegment(2));
+		$this->assertEquals('three', $uri->getSegment(3));
+	}
+
+	public function testSetGetPath()
+	{
+		$uri = new Uri();
+		$path = 'come/as/you/are';
+		$ext = 'nirvana';
+		$query = array('clubOf' => 27);
+		$uri->setPath($path.'.'.$ext.'?'.http_build_query($query));
+
+		$this->assertEquals('/'.$path, $uri->getPath());
+
+		return $uri;
+	}
+
+	/**
+	 * @depends  testSetGetPath
+	 */
+	public function testSetGetExtension(Uri $uri)
+	{
+		$this->assertEquals('nirvana', $uri->getExtension());
+
+		$uri->setExtension('KurtCobain');
+		$this->assertEquals('KurtCobain', $uri->getExtension());
+	}
+
+	/**
+	 * @depends  testSetGetPath
+	 */
+	public function testSetGetAddQuery(Uri $uri)
+	{
+		$this->assertEquals(array('clubOf' => 27), $uri->getQuery());
+
+		$uri->addQuery(array('foundingMember' => 'true'));
+		$this->assertEquals(array('clubOf' => 27, 'foundingMember' => 'true'), $uri->getQuery());
+
+		$uri->setQuery('alsoSang=SmellsLikeTeenSpirit');
+		$this->assertEquals('alsoSang=SmellsLikeTeenSpirit', $uri->getQueryString());
+		$this->assertEquals('?alsoSang=SmellsLikeTeenSpirit', $uri->getQueryString(true));
 	}
 }

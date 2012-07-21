@@ -391,7 +391,7 @@ class Uri
 	}
 
 	/**
-	 * Returns the full URI as a string
+	 * Returns the path as a string (without extension or query)
 	 *
 	 * @return  string
 	 *
