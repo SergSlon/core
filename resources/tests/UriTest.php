@@ -23,6 +23,11 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('everything' => '42'), $uri->getQuery());
 		$this->assertEquals($uriString, $uri->get());
 		$this->assertEquals($uriString, strval($uri));
+
+		$justDomain = 'test.me';
+		$uri2 = new Uri('ftp://'.$justDomain);
+		$this->assertEquals('ftp', $uri2->getScheme());
+		$this->assertEquals($justDomain, $uri2->getHostname());
 	}
 
 	public function testConstructArray()
@@ -66,6 +71,40 @@ class UriTest extends \PHPUnit_Framework_TestCase
 	public function testConstructInvalid()
 	{
 		new Uri(0);
+	}
+
+	public function test_setApp()
+	{
+		$app = $this->getMockBuilder('Fuel\Kernel\Application\Base')
+			->disableOriginalConstructor()
+			->getMock();
+		$app->expects($this->once())
+			->method('getConfig')
+			->with($this->equalTo('extension'), $this->equalTo(null))
+			->will($this->returnValue('xml'));
+		$req = new \StdClass();
+		$req->input = $this->getMock('Fuel\Kernel\Request\Input\Base');
+		$req->input->expects($this->once())
+			->method('getScheme')
+			->will($this->returnValue('ftp'));
+		$req->input->expects($this->at(1))
+			->method('getServer')
+			->with($this->equalTo('SERVER_NAME'))
+			->will($this->returnValue('forty.two'));
+		$req->input->expects($this->at(2))
+			->method('getServer')
+			->with($this->equalTo('SERVER_PORT'))
+			->will($this->returnValue('42'));
+		$app->expects($this->once())
+			->method('getActiveRequest')
+			->will($this->returnValue($req));
+
+		$uri = new Uri('/relative/path');
+		$uri->_setApp($app);
+		$this->assertEquals('forty.two', $uri->getHostname());
+		$this->assertEquals('42', $uri->getPort());
+		$this->assertEquals('/relative/path', $uri->getPath());
+		$this->assertEquals('xml', $uri->getExtension());
 	}
 
 	public function testSetGetScheme()
@@ -112,6 +151,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('one', $uri->getSegment(1));
 		$this->assertEquals('two', $uri->getSegment(2));
 		$this->assertEquals('three', $uri->getSegment(3));
+		$this->assertEquals('unset', $uri->getSegment(4, 'unset'));
 	}
 
 	public function testSetGetPath()
@@ -151,5 +191,41 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri->setQuery('alsoSang=SmellsLikeTeenSpirit');
 		$this->assertEquals('alsoSang=SmellsLikeTeenSpirit', $uri->getQueryString());
 		$this->assertEquals('?alsoSang=SmellsLikeTeenSpirit', $uri->getQueryString(true));
+		$this->assertEquals('SmellsLikeTeenSpirit', $uri->getQuery('alsoSang'));
+		$this->assertEquals('callMeMaybe', $uri->getQuery('butDidntSing', 'callMeMaybe'));
+	}
+
+	/**
+	 * @expectedException  InvalidArgumentException
+	 */
+	public function testAddQueryInvalidException()
+	{
+		$uri = new Uri();
+		$uri->addQuery(2);
+	}
+
+	public function testReplace()
+	{
+		$uri = new Uri('<scheme>://<user>:<pass>@<domain>/<controller>/<action>.<ext>?<question>=<asked>');
+		$uri->replace(array(
+			'scheme' => 'https',
+			'user' => 'amy',
+			'pass' => 'rory',
+			'domain' => 'doctor.who',
+			'controller' => 'season5',
+			'action' => 'finale',
+			'ext' => 'json',
+			'question' => 'silence',
+			'asked' => 'willFall',
+		));
+
+		$this->assertEquals('https', $uri->getScheme());
+		$this->assertEquals('amy', $uri->getUsername());
+		$this->assertEquals('rory', $uri->getPassword());
+		$this->assertEquals('doctor.who', $uri->getHostname());
+		$this->assertEquals('season5', $uri->getSegment(1));
+		$this->assertEquals('finale', $uri->getSegment(2));
+		$this->assertEquals('json', $uri->getExtension());
+		$this->assertEquals('willFall', $uri->getQuery('silence'));
 	}
 }

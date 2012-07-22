@@ -173,16 +173,14 @@ class Uri
 			$input = ($req = $app->getActiveRequest()) ? $req->input : $app->env->input;
 
 			$this->scheme = $input->getScheme();
-			$this->hostname = $input->getServer('SERVER_NAME', $app->env->input->getServer('SERVER_NAME'));
+			$this->hostname = $input->getServer('SERVER_NAME');
 
 			// when no extension was given, use application default
 			is_null($this->extension)
 				and $this->extension = $app->getConfig('extension', null);
 
 			// when no port was given, default to current port
-			if (is_null($this->port)
-				and ($port = $input->getServer('SERVER_PORT', $app->env->input->getServer('SERVER_PORT')))
-				and ! in_array($port, array(80, 443)))
+			if (is_null($this->port) and ($port = $input->getServer('SERVER_PORT')))
 			{
 				$this->setPort($port);
 			}
@@ -376,7 +374,7 @@ class Uri
 		}
 
 		$extension = pathinfo($path, PATHINFO_EXTENSION);
-		if ( ! is_null($extension))
+		if ( ! empty($extension))
 		{
 			// Detect extension
 			$this->extension = $extension;
@@ -527,16 +525,25 @@ class Uri
 			// Expect the keys enclosed as an HTML tag
 			$key = '<'.$key.'>';
 
-			// Replace in path/extension
+			// Replace in hostname/path/extension
+			$this->setScheme(str_replace($key, $val, $this->scheme));
+			if (strpos($this->user, '<') !== false)
+			{
+				$username = str_replace($key, $val, $this->getUsername());
+				$password = str_replace($key, $val, $this->getPassword()) ?: null;
+				$this->setUser($username, $password);
+			}
+			$this->setHostname(str_replace($key, $val, $this->hostname));
 			$this->path = str_replace($key, $val, $this->path);
 			$this->extension = str_replace($key, $val, $this->extension);
 
 			// Replace in QueryString when applicable
 			if ($query)
 			{
-				$query = str_replace($key, urlencode($val), $query);
+				$query = str_replace(urlencode($key), urlencode($val), $query);
 			}
 		}
+		$this->pathArray = array_filter(explode('/', $this->path));
 
 		// When the query was parsed, parse it back into an array
 		if ($query)
