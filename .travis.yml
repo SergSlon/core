@@ -8,3 +8,6 @@ before_script:
   - php composer.phar install
 
 script: phpunit --coverage-text --configuration phpunit.xml
+
+notifications:
+  irc: "irc.freenode.org#fuelphp"
