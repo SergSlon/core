@@ -8,12 +8,12 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.0",
-		"fuel/kernel": "dev-master",
-		"fuel/cache":  "dev-master",
-		"fuel/fieldset":  "dev-master",
-		"fuel/job":  "dev-master",
-		"fuel/migration":  "dev-master",
-		"fuel/validation":  "dev-master"
+		"fuel/kernel": "dev-develop",
+		"fuel/cache":  "dev-develop",
+		"fuel/fieldset":  "dev-develop",
+		"fuel/job":  "dev-develop",
+		"fuel/migration":  "dev-develop",
+		"fuel/validation":  "dev-develop"
 	},
 	"suggest": {
 		"imagine/Imagine": ">=0.2.8",
