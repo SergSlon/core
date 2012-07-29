@@ -58,7 +58,7 @@ class Curl extends Base
 	protected $options = array(
 		CURLOPT_TIMEOUT         => 30,
 		CURLOPT_RETURNTRANSFER  => true,
-		CURLOPT_FAILONERROR     => true,
+		CURLOPT_FAILONERROR     => false,
 	);
 
 	/**
