@@ -31,8 +31,8 @@ class PhpNative extends Base
 	 */
 	public function _setApp(Application\Base $app)
 	{
-		@session_start();
 		session_name($app->getConfig('session.name', 'fuelSession'));
+		@session_start();
 		session_set_cookie_params(
 			$app->getConfig('session.lifetime', 7200),
 			$app->getConfig('session.path', '/'),
