@@ -22,31 +22,17 @@ use Fuel\Kernel\DiC\Dependable;
 trait DiCTrait
 {
 	/**
-	 * @var  string|\Fuel\Kernel\Dic\Dependable  name for the DiC or null to use the App's
+	 * @var  \Fuel\Kernel\Dic\Dependable  DiC object or null to use the App's
 	 */
 	protected $dic;
 
 	public function getDiC()
 	{
-		if ( ! $this->dic instanceof Dependable)
+		if (is_null($this->dic))
 		{
 			/** @var  \Fuel\Kernel\Application\Base  $app  support either $_app or $app property */
 			$app = property_exists($this, '_app') ? $this->_app : $this->app;
-			if (is_string($this->dic))
-			{
-				try
-				{
-					$this->dic = $app->getObject('Notifier', $this->dic);
-				}
-				catch (\RuntimeException $e)
-				{
-					$this->dic = $app->forge(array('Notifier', $this->dic));
-				}
-			}
-			elseif (is_null($this->dic))
-			{
-				$this->dic = $app->dic;
-			}
+			$this->dic = $app->dic;
 		}
 
 		return $this->dic;
